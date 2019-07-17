@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const height = 20;
+const height = 15;
 const meshSize = 17;
 
 const BuildMesh = (map) => {
@@ -10,7 +10,7 @@ const BuildMesh = (map) => {
 
 	for (let y = 0; y < map.size; y++)
 		for (let x = 0; x < map.size; x++)
-			geometry.vertices.push(new THREE.Vector3((x - map.size/2) * sizeFactor, map.get(x, y) * height, (y - map.size/2) * sizeFactor));
+			geometry.vertices.push(new THREE.Vector3((x - map.size/2) * sizeFactor, map.get(x, y) * height - height/2, (y - map.size/2) * sizeFactor));
 
 	for (let y = 0; y < map.size-1; y ++)
             for (let x = 0; x < map.size-1; x++)

@@ -13,15 +13,12 @@ import HeightMap from './HeightMap';
 */
 
 const Params = {
-	spread: 0.5, //How far each midpoint can deviate from the average of its neighbors
-	spreadDecay: 0.5 //How much the spread decays each iteration
+	spread: 0.4,
+	spreadDecay: 0.5
 }
 
-const MidpointDisplacement = (size) => {
+const MidpointDisplacement = (size, spread, spreadDecay) => {
 	var heightMap = new HeightMap(size);
-
-	let spread = Params.spread;
-	let spreadDecay = Params.spreadDecay;
 
 	//Initialize corners to random numbers [0, 1)
 	heightMap.set(0, 0, Math.random());
@@ -33,17 +30,17 @@ const MidpointDisplacement = (size) => {
 
 	var interval = size-1; //The interval between assigned points
 
-	while (interval > 1)
+	while (interval > 1) //Run while midpoints are still whole numbers
 	{
 		let halfInterval = interval / 2;
 
-		for (let y = 0; y < size-1; y += interval)
+		for (let y = 0; y < size-1; y += interval) //Jump across heightmap by specified interval
 			for (let x = 0; x < size-1; x += interval)
 			{
 				let midX = x + halfInterval;
 				let midY = y + halfInterval;
 
-				if (heightMap.get(midX, y) == 0)
+				if (heightMap.get(midX, y) == 0) //If each midpoint is not set, set it to average of endpoings plus or minus random number in spread
 					heightMap.set(midX, y, ((heightMap.get(x, y) + heightMap.get(x+interval, y)) / 2) + (Math.random() * spread - spread/2));
 
 				if (heightMap.get(midX, y+interval) == 0)
@@ -60,8 +57,8 @@ const MidpointDisplacement = (size) => {
 
 			}
 
-		spread *= spreadDecay;
-		interval /= 2;
+		spread *= spreadDecay; //Multiply spread by spreadDecay
+		interval /= 2; //Divide interval by 2 to get exponentially smaller squares each time
 	}
 
 	return heightMap;
