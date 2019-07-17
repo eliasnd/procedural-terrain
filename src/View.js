@@ -51,16 +51,19 @@ class View extends React.Component
 
 		animate();
 
-		var gui = <Gui generator = {this.generate}/>;
+		var gui = <Gui callback = {generate}/>;
 
-		function generate(params)
+		function generate(generator, params)
 		{
-			if (params.generator == 'midpointDisplacement')
-				map = MidpointDisplacement(params.size, params.spread, params.spreadDecay);
+			if (generator == 'Midpoint Displacement')
+				map = MidpointDisplacement(params.Size ? params.Size : 65, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
+			else
+				map = MidpointDisplacement(65, 0.4, 0.5);
+
+			scene.remove(mesh);
 
 			mesh = BuildMesh(map);
 
-			scene.children.map((child) => { scene.remove(child); });
 			scene.add(mesh);
 		}
 

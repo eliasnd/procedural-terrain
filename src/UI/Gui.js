@@ -1,6 +1,6 @@
 import React from 'react';
 import Params from './Params';
-import Parameter from './Parameter';
+import Generator from './Generator';
 
 //Styles {
 	const divStyle = {
@@ -36,70 +36,48 @@ const configs = [
 	['perlinNoise', 'Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity']
 ]
 
+const generators = ['Midpoint Displacement', 'Diamond Square', 'Perlin Noise'];
+
 class Gui extends React.Component
 {
 	constructor(props)
 	{
 		super(props);
 		this.state = {
-			generator: 'midpointDisplacement',
-			params: ['Size', 'Spread', 'Spread Decay']
+			generator: 'Midpoint Displacement',
+			data: {}
 		};
 
-		this.handleGeneratorChange = this.handleGeneratorChange.bind(this);
-		this.buildParams = this.buildParams.bind(this);
+		this.updateGenerator = this.updateGenerator.bind(this);
+		this.updateData = this.updateData.bind(this);
+		this.generate = this.generate.bind(this);
 	}
 
-	handleGeneratorChange(event)
+	updateGenerator(generator)
 	{
-		/*if (event.target.value == 'midpointDisplacement')
-			var params = ['Size', 'Spread', 'Spread Decay'];
-		else if (event.target.value == 'diamondSquare')
-			var params = ['Size', 'Spread', 'Spread Decay'];
-		else
-			var params = ['Swoop', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];*/
-
-		this.setState({
-			generator: event.target.value,
-			//params: params
-		})
+		this.setState({generator: generator});
 	}
 
-	buildParams(params)
+	updateData(data)
 	{
-		var parameters = params.map((param) => <Parameter text = {param} width = {this.props.width} handleChange = {this.getParams}/>);
-		return parameters;
+		this.setState({data: data});
+	}
+
+	generate()
+	{
+		console.log(this.state.data);
+		this.props.callback(this.state.generator, this.state.data);
 	}
 
 	render() 
 	{
-		if (this.state.generator == 'midpointDisplacement')
-			var params = ['Size', 'Spread', 'Spread Decay'];
-		else if (this.state.generator == 'diamondSquare')
-			var params = [];
-		else
-			var params = ['Swoop', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
-
-		var parameters = this.buildParams(params);
-
 		return (
 			<div style = {divStyle}>
-				<form onsubmit = {this.props.generate}>
-					<div style = {generatorSelectStyle}>
-						<label for = 'generatorSelect'>Generator: </label>
-						<select value = {this.state.generator} onChange = {this.handleGeneratorChange} id = 'generatorSelect'>
-							<option value='midpointDisplacement'>Midpoint Displacement</option>
-							<option value='diamondSquare'>Diamond Square</option>
-							<option value='perlinNoise'>Perlin Noise</option>
-						</select>
-					</div>
-					<div style = {paramsStyle}>
-						{parameters}
-					</div>
-					<div style = {submit}>
-						<input type = 'submit' value = 'Generate'/>
-					</div>
-				</form>
+				<Generator callback = {this.updateGenerator} options = {generators}/>
+				<Params generator = {this.state.generator} callback = {this.updateData}/>
+				<div style = {{textAlign: 'center'}}>
+					<button onClick = {this.generate}>Generate</button>
+				</div>
 			</div>
 		);
 	}

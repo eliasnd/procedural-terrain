@@ -1,10 +1,26 @@
 import React from 'react';
-import Parameter from './Parameter';
+//import Parameter from './Parameter';
 
 const style = {
 	textAlign: 'right',
 	paddingRight: '5%',
+	paddingTop: '5px',
 	position: 'relative'
+}
+
+const Parameter = function(props)
+{
+	var handleChange = (event) =>
+	{
+		props.callback(props.text, event.target.value);
+	}
+
+	return (
+		<div style = {style}>
+			<span>{props.text}: </span>
+			<input type = 'text' style = {{width: props.width}} onChange = {handleChange}/>
+		</div>
+	);
 }
 
 class Params extends React.Component
@@ -13,30 +29,33 @@ class Params extends React.Component
 	{
 		super(props);
 		this.state = {
-			generator: this.props.generator
+			generator: this.props.generator,
+			params: [],
+			data: {}
 		}
 
-		this.getParams = this.getParams.bind(this);
+		this.getParam = this.getParam.bind(this);
 	}
 
-	getParams(param, event)
+	getParam(param, value)
 	{
-		this.setState({param: event.target.value});
-		this.props.passParams(this.state);
+		var data = this.state.data;
+		data[param] = value;
+		this.setState({data: data});
+
+		this.props.callback(data);
 	}
 
 	render()
 	{
-		var params;
-
-		if (this.props.generator == 'midpointDisplacement')
-			params = ['Size', 'Spread', 'Spread Decay'];
-		else if (this.props.generator == 'diamondSquare')
-			params = ['Size', 'Spread', 'Spread Decay'];
+		if (this.props.generator == 'Midpoint Displacement')
+			var params = ['Size', 'Spread', 'Spread Decay'];
+		else if (this.props.generator == 'Diamond Square')
+			var params = ['Size', 'Spread', 'Spread Decay'];
 		else
-			params = ['Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
+			var params = ['Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
 
-		params = params.map((param) => <Parameter text = {param} width = {this.props.width} handleChange = {this.getParams}/>);
+		params = params.map((param) => <Parameter text = {param} width = {this.props.width} callback = {this.getParam}/>);
 
 		return (
 			<div style = {style}>
