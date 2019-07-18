@@ -21,10 +21,11 @@ const DiamondSquare = (size, spread, spreadDecay) =>
 	}
 
 	//Initialize corners to random numbers [0, 1)
-	map.set(0, 0, Math.random());
-	map.set(0, size-1, Math.random());
-	map.set(size-1, 0, Math.random());
-	map.set(size-1, size-1, Math.random());
+	let startHeight = Math.random();
+	map.set(0, 0, startHeight);
+	map.set(0, size-1, startHeight);
+	map.set(size-1, 0, startHeight);
+	map.set(size-1, size-1, startHeight);
 
 	var interval = size-1;
 
@@ -41,22 +42,11 @@ const DiamondSquare = (size, spread, spreadDecay) =>
 				let avg = (map.get(x, y) + map.get(x, y + interval) + map.get(x + interval, y) + map.get(x + interval, y + interval)) / 4;
 
 				map.set(midX, midY, avg + (Math.random() * spread - spread/2));
-			}
 
-		for (let y = 0; y < size-1; y += interval) //Jump across heightmap by specified interval
-			for (let x = 0; x < size-1; x += interval)
-			{
-				let midX = x + halfInterval;
-				let midY = y + halfInterval;
-
-				if (map.get(x, midY) == 0)
-					map.set(x, midY, AverageSurrounding(x, midY, halfInterval) + (Math.random() * spread - spread/2));
-				if (map.get(x+interval, midY) == 0)
-					map.set(x+interval, midY, AverageSurrounding(x+interval, midY, halfInterval) + (Math.random() * spread - spread/2));
-				if (map.get(midX, y) == 0)
-					map.set(midX, y, AverageSurrounding(midX, y, halfInterval) + (Math.random() * spread - spread/2));
-				if (map.get(midX, y+interval) == 0)
-					map.set(midX, y+interval, AverageSurrounding(midX, y+interval, halfInterval) + (Math.random() * spread - spread/2));
+				map.set(x, midY, (map.get(x, y) + map.get(x, y+interval)) / 2 + (Math.random() * spread - spread/2));
+				map.set(x+interval, midY, (map.get(x+interval, y) + map.get(x+interval, y+interval)) / 2 + (Math.random() * spread - spread/2));
+				map.set(midX, y, (map.get(x, y) + map.get(x+interval, y)) / 2 + (Math.random() * spread - spread/2));
+				map.set(midX, y+interval, (map.get(x, y+interval) + map.get(x+interval, y+interval)) / 2 + (Math.random() * spread - spread/2));
 			}
 
 		interval /= 2;
