@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MidpointDisplacement from './MidpointDisplacement';
+import DiamondSquare from './DiamondSquare';
 import BuildMesh from './MeshBuilder';
 import Gui from './UI/Gui';
 import * as THREE from 'three';
@@ -56,9 +57,11 @@ class View extends React.Component
 		function generate(generator, params)
 		{
 			if (generator == 'Midpoint Displacement')
-				map = MidpointDisplacement(params.Size ? params.Size : 65, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
+				map = MidpointDisplacement(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
+			else if (generator == 'Diamond Square')
+				map = DiamondSquare(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
 			else
-				map = MidpointDisplacement(65, 0.4, 0.5);
+				map = MidpointDisplacement(257, 0.4, 0.5);
 
 			scene.remove(mesh);
 

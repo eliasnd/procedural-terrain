@@ -17,7 +17,7 @@ const Generator = function(props)
 	return (
 		<div style = {style}>
 			<span>Generator: </span>
-			<select value = {props.options[0]} onChange = {handleChange} id = 'generatorSelect'>
+			<select default = {props.options[0]} onChange = {handleChange} id = 'generatorSelect'>
 				{options}
 			</select>
 		</div>

@@ -12,21 +12,14 @@ import HeightMap from './HeightMap';
 	is more readable and has negligible time difference, although I haven't tested on map sizes larger than 2049.
 */
 
-const Params = {
-	spread: 0.4,
-	spreadDecay: 0.5
-}
-
 const MidpointDisplacement = (size, spread, spreadDecay) => {
-	var heightMap = new HeightMap(size);
+	var map = new HeightMap(size);
 
 	//Initialize corners to random numbers [0, 1)
-	heightMap.set(0, 0, Math.random());
-	heightMap.set(0, size-1, Math.random());
-	heightMap.set(size-1, 0, Math.random());
-	heightMap.set(size-1, size-1, Math.random());
-
-	console.log("Corners are " + heightMap.get(0, 0) + ", " + heightMap.get(0, size-1) + ", " + heightMap.get(size-1, 0) + ", " + heightMap.get(size-1, size-1));
+	map.set(0, 0, Math.random());
+	map.set(0, size-1, Math.random());
+	map.set(size-1, 0, Math.random());
+	map.set(size-1, size-1, Math.random());
 
 	var interval = size-1; //The interval between assigned points
 
@@ -40,20 +33,20 @@ const MidpointDisplacement = (size, spread, spreadDecay) => {
 				let midX = x + halfInterval;
 				let midY = y + halfInterval;
 
-				if (heightMap.get(midX, y) == 0) //If each midpoint is not set, set it to average of endpoings plus or minus random number in spread
-					heightMap.set(midX, y, ((heightMap.get(x, y) + heightMap.get(x+interval, y)) / 2) + (Math.random() * spread - spread/2));
+				if (map.get(midX, y) == 0) //If each midpoint is not set, set it to average of endpoings plus or minus random number in spread
+					map.set(midX, y, ((map.get(x, y) + map.get(x+interval, y)) / 2) + (Math.random() * spread - spread/2));
 
-				if (heightMap.get(midX, y+interval) == 0)
-					heightMap.set(midX, y+interval, ((heightMap.get(x, y+interval) + heightMap.get(x + interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
+				if (map.get(midX, y+interval) == 0)
+					map.set(midX, y+interval, ((map.get(x, y+interval) + map.get(x + interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (heightMap.get(x, midY) == 0)
-					heightMap.set(x, midY, ((heightMap.get(x, y) + heightMap.get(x, y+interval)) / 2) + (Math.random() * spread - spread/2));
+				if (map.get(x, midY) == 0)
+					map.set(x, midY, ((map.get(x, y) + map.get(x, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (heightMap.get(x+interval, midY) == 0)
-					heightMap.set(x+interval, midY, ((heightMap.get(x+interval, y) + heightMap.get(x+interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
+				if (map.get(x+interval, midY) == 0)
+					map.set(x+interval, midY, ((map.get(x+interval, y) + map.get(x+interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (heightMap.get(midX, midY) == 0)
-					heightMap.set(midX, midY, (heightMap.get(midX, y) + heightMap.get(midX, y+interval) + heightMap.get(x, midY) + heightMap.get(x+interval, midY)) / 4 + (Math.random() * spread - spread/2));
+				if (map.get(midX, midY) == 0)
+					map.set(midX, midY, (map.get(midX, y) + map.get(midX, y+interval) + map.get(x, midY) + map.get(x+interval, midY)) / 4 + (Math.random() * spread - spread/2));
 
 			}
 
@@ -61,7 +54,7 @@ const MidpointDisplacement = (size, spread, spreadDecay) => {
 		interval /= 2; //Divide interval by 2 to get exponentially smaller squares each time
 	}
 
-	return heightMap;
+	return map;
 }
 
 export default MidpointDisplacement;
