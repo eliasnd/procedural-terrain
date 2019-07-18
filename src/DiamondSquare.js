@@ -1,5 +1,10 @@
 import HeightMap from './HeightMap';
 
+/*
+	The diamond square algorithm works similarly to midpoint displacement but prioritizes the center of each square rather than the 
+
+*/
+
 const DiamondSquare = (size, spread, spreadDecay) => 
 {
 	var map = new HeightMap(size);
@@ -27,7 +32,7 @@ const DiamondSquare = (size, spread, spreadDecay) =>
 	map.set(size-1, 0, startHeight);
 	map.set(size-1, size-1, startHeight);
 
-	var interval = size-1;
+	var interval = size-1; //Start by moving in increments of the entire map
 
 	while (interval > 1)
 	{
@@ -39,9 +44,9 @@ const DiamondSquare = (size, spread, spreadDecay) =>
 				let midX = x + halfInterval;
 				let midY = y + halfInterval;
 
-				let avg = (map.get(x, y) + map.get(x, y + interval) + map.get(x + interval, y) + map.get(x + interval, y + interval)) / 4;
+				let avg = (map.get(x, y) + map.get(x, y + interval) + map.get(x + interval, y) + map.get(x + interval, y + interval)) / 4; //Average of four corners
 
-				map.set(midX, midY, avg + (Math.random() * spread - spread/2));
+				map.set(midX, midY, avg + (Math.random() * spread - spread/2)); //Set middle of square to 
 
 				map.set(x, midY, (map.get(x, y) + map.get(x, y+interval)) / 2 + (Math.random() * spread - spread/2));
 				map.set(x+interval, midY, (map.get(x+interval, y) + map.get(x+interval, y+interval)) / 2 + (Math.random() * spread - spread/2));
