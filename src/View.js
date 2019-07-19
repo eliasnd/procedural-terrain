@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import MidpointDisplacement from './MidpointDisplacement';
+import PerlinNoise from './PerlinNoise';
 import DiamondSquare from './DiamondSquare';
 import BuildMesh from './MeshBuilder';
 import Gui from './UI/Gui';
@@ -31,7 +32,7 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = MidpointDisplacement(257, 0.3, 0.5);
+		var map = PerlinNoise(257, 4);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 

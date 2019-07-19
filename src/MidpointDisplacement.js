@@ -33,19 +33,19 @@ const MidpointDisplacement = (size, spread, spreadDecay) => {
 				let midX = x + halfInterval;
 				let midY = y + halfInterval;
 
-				if (map.get(midX, y) == 0) //If each midpoint is not set, set it to average of endpoings plus or minus random number in spread
+				if (map.get(midX, y) === 0) //If each midpoint is not set, set it to average of endpoings plus or minus random number in spread
 					map.set(midX, y, ((map.get(x, y) + map.get(x+interval, y)) / 2) + (Math.random() * spread - spread/2));
 
-				if (map.get(midX, y+interval) == 0)
+				if (map.get(midX, y+interval) === 0)
 					map.set(midX, y+interval, ((map.get(x, y+interval) + map.get(x + interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (map.get(x, midY) == 0)
+				if (map.get(x, midY) === 0)
 					map.set(x, midY, ((map.get(x, y) + map.get(x, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (map.get(x+interval, midY) == 0)
+				if (map.get(x+interval, midY) === 0)
 					map.set(x+interval, midY, ((map.get(x+interval, y) + map.get(x+interval, y+interval)) / 2) + (Math.random() * spread - spread/2));
 
-				if (map.get(midX, midY) == 0)
+				if (map.get(midX, midY) === 0)
 					map.set(midX, midY, (map.get(midX, y) + map.get(midX, y+interval) + map.get(x, midY) + map.get(x+interval, midY)) / 4 + (Math.random() * spread - spread/2));
 
 			}
