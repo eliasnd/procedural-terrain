@@ -2,7 +2,7 @@ import HeightMap from './HeightMap';
 
 /*
 	The diamond square algorithm works similarly to midpoint displacement but prioritizes the center of each square rather than the 
-
+	midpoints
 */
 
 const DiamondSquare = (size, spread, spreadDecay) => 
@@ -46,15 +46,15 @@ const DiamondSquare = (size, spread, spreadDecay) =>
 
 				let avg = (map.get(x, y) + map.get(x, y + interval) + map.get(x + interval, y) + map.get(x + interval, y + interval)) / 4; //Average of four corners
 
-				map.set(midX, midY, avg + (Math.random() * spread - spread/2)); //Set middle of square to 
+				map.set(midX, midY, avg + (Math.random() * spread - spread/2)); //Set middle of square to average plus or minus random value
 
-				map.set(x, midY, (map.get(x, y) + map.get(x, y+interval)) / 2 + (Math.random() * spread - spread/2));
+				map.set(x, midY, (map.get(x, y) + map.get(x, y+interval)) / 2 + (Math.random() * spread - spread/2)); //Set midpoints similarly
 				map.set(x+interval, midY, (map.get(x+interval, y) + map.get(x+interval, y+interval)) / 2 + (Math.random() * spread - spread/2));
 				map.set(midX, y, (map.get(x, y) + map.get(x+interval, y)) / 2 + (Math.random() * spread - spread/2));
 				map.set(midX, y+interval, (map.get(x, y+interval) + map.get(x+interval, y+interval)) / 2 + (Math.random() * spread - spread/2));
 			}
 
-		interval /= 2;
+		interval /= 2; 			//Repeat on smaller grid with less spread
 		spread *= spreadDecay;
 	}
 
