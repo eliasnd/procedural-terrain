@@ -31,7 +31,7 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = PerlinNoise(33, 30, 1, 1, 1);
+		var map = PerlinNoise(257, 200, 12, 0.4, 2);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
