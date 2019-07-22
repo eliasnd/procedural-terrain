@@ -48,14 +48,15 @@ class Params extends React.Component
 
 	render()
 	{
-		if (this.props.generator == 'Midpoint Displacement')
-			var params = ['Size', 'Spread', 'Spread Decay'];
-		else if (this.props.generator == 'Diamond Square')
-			var params = ['Size', 'Spread', 'Spread Decay'];
+		var params;
+		if (this.props.generator === 'Midpoint Displacement')
+			params = ['Size', 'Spread', 'Spread Decay'];
+		else if (this.props.generator === 'Diamond Square')
+			params = ['Size', 'Spread', 'Spread Decay'];
 		else
-			var params = ['Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
+			params = ['Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
 
-		params = params.map((param) => <Parameter text = {param} width = {this.props.width} callback = {this.getParam}/>);
+		params = params.map((param) => <Parameter key = {param} text = {param} width = {this.props.width} callback = {this.getParam}/>);
 
 		return (
 			<div style = {style}>

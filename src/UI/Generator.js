@@ -7,7 +7,7 @@ const style = {
 
 const Generator = function(props)
 {
-	var options = props.options.map((option) => <option value = {option}>{option}</option>);
+	var options = props.options.map((option) => <option key = {option} value = {option}>{option}</option>);
 
 	var handleChange = (event) =>
 	{

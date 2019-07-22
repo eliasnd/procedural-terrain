@@ -12,22 +12,6 @@ import Generator from './Generator';
 		paddingBottom: '20px',
 		fontSize: '10px'
 	}
-
-	const generatorSelectStyle  = {
-		paddingRight: '5%',
-		textAlign: 'right',
-	}
-
-	const submit = {
-		paddingTop: '10px',
-		textAlign: 'center'
-	}
-
-	const paramsStyle = {
-		textAlign: 'right',
-		paddingRight: '5%',
-		position: 'relative'
-	}
 //}
 
 const configs = [

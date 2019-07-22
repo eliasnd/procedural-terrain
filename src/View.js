@@ -6,7 +6,6 @@ import DiamondSquare from './DiamondSquare';
 import BuildMesh from './MeshBuilder';
 import Gui from './UI/Gui';
 import * as THREE from 'three';
-import * as DAT from 'dat-gui';
 
 class View extends React.Component
 {
@@ -32,7 +31,7 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = PerlinNoise(257, 4);
+		var map = PerlinNoise(33, 30, 1, 1, 1);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
@@ -57,10 +56,12 @@ class View extends React.Component
 
 		function generate(generator, params)
 		{
-			if (generator == 'Midpoint Displacement')
+			if (generator === 'Midpoint Displacement')
 				map = MidpointDisplacement(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
-			else if (generator == 'Diamond Square')
+			else if (generator === 'Diamond Square')
 				map = DiamondSquare(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
+			else if (generator === 'Perlin Noise')
+				map = PerlinNoise(params.Size ? params.Size : 257, params.Scale ? params.Scale : 4, params.Octaves ? params.Octaves : 1, params.Persistence ? params.Persistence : 0.5, params.Lacunarity ? params.Lacunarity : 2);
 			else
 				map = MidpointDisplacement(257, 0.4, 0.5);
 
