@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MidpointDisplacement from './MidpointDisplacement';
-import PerlinNoise from './PerlinNoise';
-import DiamondSquare from './DiamondSquare';
+import MidpointDisplacement from './Generators/MidpointDisplacement';
+import PerlinNoise from './Generators/PerlinNoise';
+import DiamondSquare from './Generators/DiamondSquare';
+import ParticleErosion from './Eroders/ParticleErosion';
 import BuildMesh from './MeshBuilder';
 import Gui from './UI/Gui';
 import * as THREE from 'three';
@@ -25,13 +26,15 @@ class View extends React.Component
 		var renderer = new THREE.WebGLRenderer();
 		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(0x1a214a, 1);
 
 		var light = new THREE.DirectionalLight(0x404040, 5);
 		light.position.set(0, 60, 0);
 
 		scene.add(light);
 
-		var map = PerlinNoise(257, 200, 12, 0.4, 2);
+		var map = PerlinNoise(33, 2, 12, 0.4, 2);
+		map = ParticleErosion(map, 1);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
@@ -61,7 +64,7 @@ class View extends React.Component
 			else if (generator === 'Diamond Square')
 				map = DiamondSquare(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
 			else if (generator === 'Perlin Noise')
-				map = PerlinNoise(params.Size ? params.Size : 257, params.Scale ? params.Scale : 4, params.Octaves ? params.Octaves : 1, params.Persistence ? params.Persistence : 0.5, params.Lacunarity ? params.Lacunarity : 2);
+				map = PerlinNoise(params.Size ? params.Size : 257, params.Scale ? params.Scale : 2, params.Octaves ? params.Octaves : 12, params.Persistence ? params.Persistence : 0.4, params.Lacunarity ? params.Lacunarity : 2);
 			else
 				map = MidpointDisplacement(257, 0.4, 0.5);
 
