@@ -16,7 +16,7 @@ class HeightMap
 		else
 		{
 			let unitX = Math.floor(x);
-			console.log("unitX is " + unitX);
+			console.log("X is " + x + ", unitX is " + unitX);
 			let unitY = Math.floor(y);
 			let xOffset = x % 1.0;
 			let yOffset = y % 1.0;
