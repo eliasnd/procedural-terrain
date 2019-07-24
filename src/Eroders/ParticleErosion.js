@@ -36,7 +36,7 @@ const ParticleErosion = (map, erosions) =>
 		let dir = new Vector2(drop.dir.x * inertia - gradient.x * (1-inertia), drop.dir.y * inertia - gradient.y * (1-inertia)); 	//Final direction is combination of gradient and previous dir
 
 		if (dir.magnitude() == 0)							//If direction is 0, create random direction
-			dir = new Vector2(Math.random, Math.random);
+			dir = new Vector2(Math.random(), Math.random());
 
 		dir.normalize();									//Return direction with magnitude of 1 to guarantee moving one square each step
 
@@ -45,8 +45,6 @@ const ParticleErosion = (map, erosions) =>
 
 	const Erode = (pos, amount) =>			//Erode amount from specified radius around position
 	{
-		if (amount > 0.1)
-			console.log("Eroding " + amount + " at " + pos.x + ", " + pos.y + "\n height is " + map.get(pos.x, pos.y));
 		let total = 0;
 
 		let lowerY = Math.max(0, Math.ceil(pos.y - params.radius));						//Calculate bounds of erosion with radius
@@ -68,8 +66,6 @@ const ParticleErosion = (map, erosions) =>
 
 	const Deposit = (pos, amount) =>		//Deposit amount at four corners of coord
 	{
-		if (amount > 0.1)
-			console.log("Depositing " + amount + " at " + pos.x + ", " + pos.y + "\n height is " + map.get(pos.x, pos.y));
 		let xOffset = pos.x % 1.0;
 		let yOffset = pos.y % 1.0;
 		let x = Math.floor(pos.x);
