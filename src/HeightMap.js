@@ -10,24 +10,37 @@ class HeightMap
 
 	get(x, y)
 	{
-		console.log("Testing: size is " + this.size);
-		if (x - Math.floor(x) == 0 && y - Math.floor(y) == 0)
+		if (Number.isInteger(x) && Number.isInteger(y))
 			return this.map[y * this.size + x];
 		else
 		{
 			let unitX = Math.floor(x);
-			console.log("X is " + x + ", unitX is " + unitX);
+			//console.log("unitX is " + unitX);
 			let unitY = Math.floor(y);
 			let xOffset = x % 1.0;
 			let yOffset = y % 1.0;
 			let nextX = Math.min(this.size-1, unitX+1);
-			console.log("nextX is " + nextX);
+			//console.log("nextX is " + nextX);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			let top = this.get(unitX, unitY) * (1-xOffset) + this.map[unitY * this.size + nextX] * xOffset;
+			let top = this.map[unitY * this.size + unitX] * (1-xOffset) + this.map[unitY * this.size + nextX] * xOffset;
 			let bottom = this.map[nextY * this.size + unitX] * (1-xOffset) + this.map[nextY * this.size + nextX] * xOffset;
 			return top * (1-yOffset) + bottom * yOffset;
 		}
+	}
+
+	getf(x, y)
+	{
+		let unitX = Math.floor(x);
+		let unitY = Math.floor(y);
+		let xOffset = x % 1.0;
+		let yOffset = y % 1.0;
+		let nextX = Math.min(this.size-1, unitX+1);
+		let nextY = Math.min(this.size-1, unitY+1);
+
+		let top = this.get(unitX, unitY) * (1-xOffset) + this.get(nextX, unitY) * xOffset;
+		let bottom = this.get(unitX, nextY) * (1-xOffset) + this.get(nextX, nextY) * xOffset;
+		return top * (1-yOffset) + bottom * yOffset;
 	}
 
 	set(x, y, val)
@@ -52,12 +65,13 @@ class HeightMap
 		let xOffset = x % 1.0;
 		let yOffset = y % 1.0;
 		let nextX = Math.min(this.size-1, unitX + 1);
+		//if (x > 32) console.log("NextX is " + nextX);
 		let nextY = Math.min(this.size-1, unitY + 1);
 
-		let top = this.get(nextX, y) - this.get(x, y);				//Gradients along each edge of square
+		let top = this.get(nextX, unitY) - this.get(x, unitY);				//Gradients along each edge of square
 		let bottom = this.get(nextX, nextY) - this.get(x, nextY);
-		let left = this.get(x, nextY) - this.get(x, y);
-		let right = this.get(nextX, nextY) - this.get(nextX, y);
+		let left = this.get(unitX, nextY) - this.get(x, unitY);
+		let right = this.get(nextX, nextY) - this.get(nextX, unitY);
 
 		let xGrad = top * (1-yOffset) + bottom * yOffset;
 		let yGrad = left * (1-xOffset) + right * xOffset;

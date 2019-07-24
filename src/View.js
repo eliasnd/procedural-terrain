@@ -33,8 +33,8 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = PerlinNoise(33, 2, 12, 0.4, 2);
-		map = ParticleErosion(map, 1);
+		var map = PerlinNoise(257, 2, 12, 0.4, 2);
+		map = ParticleErosion(map, 10000);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 

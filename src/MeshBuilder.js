@@ -1,7 +1,7 @@
 import * as THREE from "three";
 
-const height = 15;
-const meshSize = 17;
+const height = 8;
+const meshSize = 33;
 
 const BuildMesh = (map) => {
 	var geometry = new THREE.Geometry();

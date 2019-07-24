@@ -11,6 +11,7 @@ const params = {
 	capacity: 8,
 	maxSteps: 64,
 	evaporation: 0.02,
+	erosion: 0.7,
 	deposition: 0.2,
 	radius: 2
 }
@@ -70,17 +71,17 @@ const ParticleErosion = (map, erosions) =>
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
 	{
-		console.log("Now at " + drop.pos.x + ", " + drop.pos.y + ", height is " + map.get(drop.pos.x, drop.pos.y));
+		//console.log("Now at " + Math.floor(drop.pos.x) + ", " + Math.floor(drop.pos.y) + ", height is " + map.get(drop.pos.x, drop.pos.y));
 
 		if (drop.steps > params.maxSteps)
 			return false;
 
 		drop.dir = UpdateDirection(drop);
 
-		console.log("Direction is " + drop.dir.x + ", " + drop.dir.y);
+		//console.log("Direction is " + drop.dir.x + ", " + drop.dir.y);
 
 		let newPos = new Vector2(drop.pos.x + drop.dir.x, drop.pos.y + drop.dir.y);
-		console.log("Newpos is " + newPos.x + ", " + newPos.y + ", height is " + map.get(newPos.x, newPos.y));
+		//console.log("Newpos is " + newPos.x + ", " + newPos.y + ", height is " + map.get(newPos.x, newPos.y));
 
 		if (map.outOfBounds(newPos.x, newPos.y))
 			return false;
@@ -91,6 +92,7 @@ const ParticleErosion = (map, erosions) =>
 		{
 			let amount = Math.min(drop.sediment, diff);
 			drop.sediment -= amount;
+			//console.log("Depositing " + amount + " uphill");
 			Deposit(drop.pos, amount);
 		}
 		else
@@ -100,6 +102,7 @@ const ParticleErosion = (map, erosions) =>
 			if (drop.sediment > dropCapacity)
 			{
 				let amount = (drop.sediment - dropCapacity) * params.deposition;
+				//console.log("Depositing " + amount + " downhill");
 				drop.sediment -= amount;
 				Deposit(drop.pos, amount);
 			}
@@ -107,13 +110,14 @@ const ParticleErosion = (map, erosions) =>
 			{
 				let amount = Math.min((dropCapacity - drop.sediment) * params.erosion, -diff);
 				drop.sediment += amount;
+				//console.log("Eroding " + amount + " downhill");
 				Erode(drop.pos, amount)
 			}
 		}
 
 		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * params.gravity, 0));
 
-		console.log("Vel is " + drop.vel + ", diff is " + diff);
+		//console.log("Vel is " + drop.vel + ", diff is " + diff);
 
 		if (drop.vel == 0)
 			return false;
@@ -139,6 +143,7 @@ const ParticleErosion = (map, erosions) =>
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
 		drop.dir = new Vector2(drop.dir[0], drop.dir[1]);
 
+		//console.log("Drop start.");
 		while (MoveDrop(drop))
 		{ }
 	}
