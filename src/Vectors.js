@@ -13,8 +13,9 @@ class Vector2
 
 	normalize()
 	{
-		this.x /= this.magnitude();
-		this.y /= this.magnitude();
+		let mag = this.magnitude();
+		this.x /= mag;
+		this.y /= mag;
 	}
 }
 

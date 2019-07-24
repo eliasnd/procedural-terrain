@@ -4,6 +4,7 @@ import MidpointDisplacement from './Generators/MidpointDisplacement';
 import PerlinNoise from './Generators/PerlinNoise';
 import DiamondSquare from './Generators/DiamondSquare';
 import ParticleErosion from './Eroders/ParticleErosion';
+import Simulate from './Eroders/Erosion2';
 import BuildMesh from './MeshBuilder';
 import Gui from './UI/Gui';
 import * as THREE from 'three';
@@ -35,6 +36,7 @@ class View extends React.Component
 
 		var map = PerlinNoise(257, 2, 12, 0.4, 2);
 		map = ParticleErosion(map, 10000);
+		//map = Simulate(map, 10000);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 

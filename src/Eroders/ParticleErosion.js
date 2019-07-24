@@ -4,16 +4,25 @@ import Vector2 from './../Vectors';
 var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
 
+/*
+	An implementation of the particle-based hydraulic erosion method introduced by Hans Theobald Beyer
+	Link: https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
+
+	Simulates a number of droplets falling on the map and rolling around, eroding and depositing sediment.
+	Each droplet moves one space each step, and updates its velocity, water, sediment, direction, position, and steps taken.
+	Effects can be changed by modifying params; intending to move this to UI later.
+*/
+
 const params = {
-	inertia: 0,
-	gravity: -9.81,
-	minSlope: 0.01,
-	capacity: 8,
-	maxSteps: 64,
-	evaporation: 0.02,
-	erosion: 0.7,
-	deposition: 0.2,
-	radius: 2
+	inertia: 0,			//How much previous direction affects direction change: 0 means only gradient matters, 1 means only previous direction
+	gravity: -9.81,		//Gravity constant
+	minSlope: 0.01,		//Minimum slope to ensure visible effects
+	capacity: 8,		//Capacity coefficient for droplets
+	maxSteps: 64,		//Maximum number of steps for a droplet
+	evaporation: 0.02,	//Evaporation factor
+	erosion: 0.7,		//Erosion factor
+	deposition: 0.2,	//Deposition factor
+	radius: 2			//Radius of erosion
 }
 
 const ParticleErosion = (map, erosions) =>
@@ -22,9 +31,7 @@ const ParticleErosion = (map, erosions) =>
 	{
 		let inertia = params.inertia;
 		let gradient = map.grad(drop.pos.x, drop.pos.y);
-		console.log(gradient);
 		gradient = new Vector2(gradient[0], gradient[1]);
-
 
 		let dir = new Vector2(drop.dir.x * inertia - gradient.x * (1-inertia), drop.dir.y * inertia - gradient.y * (1-inertia)); 	//Final direction is combination of gradient and previous dir
 
@@ -38,6 +45,8 @@ const ParticleErosion = (map, erosions) =>
 
 	const Erode = (pos, amount) =>			//Erode amount from specified radius around position
 	{
+		if (amount > 0.1)
+			console.log("Eroding " + amount + " at " + pos.x + ", " + pos.y);
 		let total = 0;
 
 		let lowerY = Math.max(0, Math.ceil(pos.y - params.radius));						//Calculate bounds of erosion with radius
@@ -59,6 +68,8 @@ const ParticleErosion = (map, erosions) =>
 
 	const Deposit = (pos, amount) =>		//Deposit amount at four corners of coord
 	{
+		if (amount > 0.1)
+			console.log("Depositing " + amount + " at " + pos.x + ", " + pos.y);
 		let xOffset = pos.x % 1.0;
 		let yOffset = pos.y % 1.0;
 		let x = Math.floor(pos.x);
@@ -72,19 +83,14 @@ const ParticleErosion = (map, erosions) =>
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
 	{
-		//console.log("Now at " + Math.floor(drop.pos.x) + ", " + Math.floor(drop.pos.y) + ", height is " + map.get(drop.pos.x, drop.pos.y));
-
 		if (drop.steps > params.maxSteps)
 			return false;
 
 		drop.dir = UpdateDirection(drop);
 
-		//console.log("Direction is " + drop.dir.x + ", " + drop.dir.y);
-
 		let newPos = new Vector2(drop.pos.x + drop.dir.x, drop.pos.y + drop.dir.y);
-		//console.log("Newpos is " + newPos.x + ", " + newPos.y + ", height is " + map.get(newPos.x, newPos.y));
 
-		if (map.outOfBounds(newPos.x, newPos.y))
+		if (map.outOfBounds(newPos.x, newPos.y) || (Math.floor(newPos.x) == Math.floor(drop.pos.x) && Math.floor(newPos.y) == Math.floor(drop.pos.y)))
 			return false;
 
 		let diff = map.get(newPos.x, newPos.y) - map.get(drop.pos.x, drop.pos.y);
@@ -93,7 +99,6 @@ const ParticleErosion = (map, erosions) =>
 		{
 			let amount = Math.min(drop.sediment, diff);
 			drop.sediment -= amount;
-			//console.log("Depositing " + amount + " uphill");
 			Deposit(drop.pos, amount);
 		}
 		else
@@ -103,7 +108,6 @@ const ParticleErosion = (map, erosions) =>
 			if (drop.sediment > dropCapacity)
 			{
 				let amount = (drop.sediment - dropCapacity) * params.deposition;
-				//console.log("Depositing " + amount + " downhill");
 				drop.sediment -= amount;
 				Deposit(drop.pos, amount);
 			}
@@ -111,14 +115,11 @@ const ParticleErosion = (map, erosions) =>
 			{
 				let amount = Math.min((dropCapacity - drop.sediment) * params.erosion, -diff);
 				drop.sediment += amount;
-				//console.log("Eroding " + amount + " downhill");
 				Erode(drop.pos, amount)
 			}
 		}
 
 		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * params.gravity, 0));
-
-		//console.log("Vel is " + drop.vel + ", diff is " + diff);
 
 		if (drop.vel == 0)
 			return false;
@@ -144,7 +145,6 @@ const ParticleErosion = (map, erosions) =>
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
 		drop.dir = new Vector2(-drop.dir[0], -drop.dir[1]);
 
-		//console.log("Drop start.");
 		while (MoveDrop(drop))
 		{ }
 	}

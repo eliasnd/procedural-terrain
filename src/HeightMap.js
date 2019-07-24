@@ -15,12 +15,10 @@ class HeightMap
 		else
 		{
 			let unitX = Math.floor(x);
-			//console.log("unitX is " + unitX);
 			let unitY = Math.floor(y);
 			let xOffset = x % 1.0;
 			let yOffset = y % 1.0;
 			let nextX = Math.min(this.size-1, unitX+1);
-			//console.log("nextX is " + nextX);
 			let nextY = Math.min(this.size-1, unitY+1);
 
 			let top = this.map[unitY * this.size + unitX] * (1-xOffset) + this.map[unitY * this.size + nextX] * xOffset;
@@ -53,13 +51,17 @@ class HeightMap
 		let nextX = Math.min(this.size-1, unitX + 1);
 		let nextY = Math.min(this.size-1, unitY + 1);
 
-		let top = this.get(nextX, unitY) - this.get(x, unitY);				//Gradients along each edge of square
-		let bottom = this.get(nextX, nextY) - this.get(x, nextY);
-		let left = this.get(unitX, nextY) - this.get(x, unitY);
+		//console.log("Corners are " + this.get(unitX, unitY) + ", " + this.get(nextX, unitY) + ", " + this.get(unitX, nextY) + ", " + this.get(nextX, nextY));
+
+		let top = this.get(nextX, unitY) - this.get(unitX, unitY);				//Gradients along each edge of square
+		let bottom = this.get(nextX, nextY) - this.get(unitX, nextY);
+		let left = this.get(unitX, nextY) - this.get(unitX, unitY);
 		let right = this.get(nextX, nextY) - this.get(nextX, unitY);
 
 		let xGrad = top * (1-yOffset) + bottom * yOffset;
 		let yGrad = left * (1-xOffset) + right * xOffset;
+
+		//console.log("Grad is " + xGrad + ", " + yGrad);
 
 		return [xGrad, yGrad];
 	}
