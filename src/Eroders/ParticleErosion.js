@@ -5,7 +5,7 @@ var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear inte
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
 
 const params = {
-	inertia: 0.3,
+	inertia: 0,
 	gravity: -9.81,
 	minSlope: 0.01,
 	capacity: 8,
@@ -22,6 +22,7 @@ const ParticleErosion = (map, erosions) =>
 	{
 		let inertia = params.inertia;
 		let gradient = map.grad(drop.pos.x, drop.pos.y);
+		console.log(gradient);
 		gradient = new Vector2(gradient[0], gradient[1]);
 
 
@@ -141,7 +142,7 @@ const ParticleErosion = (map, erosions) =>
 		}
 
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
-		drop.dir = new Vector2(drop.dir[0], drop.dir[1]);
+		drop.dir = new Vector2(-drop.dir[0], -drop.dir[1]);
 
 		//console.log("Drop start.");
 		while (MoveDrop(drop))

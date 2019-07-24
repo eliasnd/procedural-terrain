@@ -29,20 +29,6 @@ class HeightMap
 		}
 	}
 
-	getf(x, y)
-	{
-		let unitX = Math.floor(x);
-		let unitY = Math.floor(y);
-		let xOffset = x % 1.0;
-		let yOffset = y % 1.0;
-		let nextX = Math.min(this.size-1, unitX+1);
-		let nextY = Math.min(this.size-1, unitY+1);
-
-		let top = this.get(unitX, unitY) * (1-xOffset) + this.get(nextX, unitY) * xOffset;
-		let bottom = this.get(unitX, nextY) * (1-xOffset) + this.get(nextX, nextY) * xOffset;
-		return top * (1-yOffset) + bottom * yOffset;
-	}
-
 	set(x, y, val)
 	{
 		this.map[y * this.size + x] = val;
@@ -65,7 +51,6 @@ class HeightMap
 		let xOffset = x % 1.0;
 		let yOffset = y % 1.0;
 		let nextX = Math.min(this.size-1, unitX + 1);
-		//if (x > 32) console.log("NextX is " + nextX);
 		let nextY = Math.min(this.size-1, unitY + 1);
 
 		let top = this.get(nextX, unitY) - this.get(x, unitY);				//Gradients along each edge of square
