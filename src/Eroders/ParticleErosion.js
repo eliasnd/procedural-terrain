@@ -11,6 +11,8 @@ var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v
 	Simulates a number of droplets falling on the map and rolling around, eroding and depositing sediment.
 	Each droplet moves one space each step, and updates its velocity, water, sediment, direction, position, and steps taken.
 	Effects can be changed by modifying params; intending to move this to UI later.
+
+	This particle-based model provides many advantages, including executing in O(1) time, as opposed to flow-based models which run in O(n^2) time.
 */
 
 const params = {
@@ -18,7 +20,7 @@ const params = {
 	gravity: -9.81,		//Gravity constant
 	minSlope: 0.01,		//Minimum slope to ensure visible effects
 	capacity: 8,		//Capacity coefficient for droplets
-	maxSteps: 64,		//Maximum number of steps for a droplet
+	maxSteps: 500,		//Maximum number of steps for a droplet
 	evaporation: 0.02,	//Evaporation factor
 	erosion: 0.7,		//Erosion factor
 	deposition: 0.2,	//Deposition factor

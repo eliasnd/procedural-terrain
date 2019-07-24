@@ -6,8 +6,30 @@ import DiamondSquare from './Generators/DiamondSquare';
 import ParticleErosion from './Eroders/ParticleErosion';
 import Simulate from './Eroders/Erosion2';
 import BuildMesh from './MeshBuilder';
-import Gui from './UI/Gui';
+import Gui from './UI/OldGui/Gui';
+import SidebarGui from './UI/SidebarGui';
+import Panel from './UI/Panel';
 import * as THREE from 'three';
+
+const gui = [
+
+	{
+		name: 'Generators',
+		content: {}
+	},
+	{
+		name: 'Eroders',
+		content: {}
+	},
+	{
+		name: 'Presets',
+		content: {}
+	},
+]
+
+const style = {
+	position: 'relative'
+}
 
 class View extends React.Component
 {
@@ -35,15 +57,13 @@ class View extends React.Component
 		scene.add(light);
 
 		var map = PerlinNoise(257, 2, 12, 0.4, 2);
-		map = ParticleErosion(map, 10000);
-		//map = Simulate(map, 10000);
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
 
-		document.body.appendChild(renderer.domElement);
+		this.view.appendChild(renderer.domElement);
 
 		renderer.render(scene, camera);
 
@@ -56,8 +76,6 @@ class View extends React.Component
 		}
 
 		animate();
-
-		var gui = <Gui callback = {generate}/>;
 
 		function generate(generator, params)
 		{
@@ -76,15 +94,13 @@ class View extends React.Component
 
 			scene.add(mesh);
 		}
-
-		this.setState({gui: gui});
 	}
 
 	render()
 	{
 		return (
-			<div>
-				{this.state.gui}
+			<div ref = {ref => this.view = ref} style = {style}>
+				<SidebarGui config = {gui} tabCount = '10'/>
 			</div>
 		);
 	}
