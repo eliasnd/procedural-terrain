@@ -46,16 +46,16 @@ const ParticleErosion = (map, erosions) =>
 	const Erode = (pos, amount) =>			//Erode amount from specified radius around position
 	{
 		if (amount > 0.1)
-			console.log("Eroding " + amount + " at " + pos.x + ", " + pos.y);
+			console.log("Eroding " + amount + " at " + pos.x + ", " + pos.y + "\n height is " + map.get(pos.x, pos.y));
 		let total = 0;
 
 		let lowerY = Math.max(0, Math.ceil(pos.y - params.radius));						//Calculate bounds of erosion with radius
-		let upperY = Math.min(map.size-1, Math.floor(pos.y + params.radius));
+		let upperY = Math.min(map.size, Math.floor(pos.y + params.radius));
 		let lowerX = Math.max(0, Math.ceil(pos.x - params.radius));
-		let upperX = Math.min(map.size-1, Math.floor(pos.x + params.radius));
+		let upperX = Math.min(map.size, Math.floor(pos.x + params.radius));
 
-		for (let y = lowerY; y < upperY; y++)
-			for (let x = lowerX; x < upperX; x++)
+		for (let y = lowerY; y < upperY && y < map.size; y++)
+			for (let x = lowerX; x < upperX && x < map.size; x++)
 				total += params.radius - new Vector2(pos.x - x, pos.y - y).magnitude();		//Calculate total weights
 
 		for (let y = lowerY; y < upperY; y++)
@@ -69,7 +69,7 @@ const ParticleErosion = (map, erosions) =>
 	const Deposit = (pos, amount) =>		//Deposit amount at four corners of coord
 	{
 		if (amount > 0.1)
-			console.log("Depositing " + amount + " at " + pos.x + ", " + pos.y);
+			console.log("Depositing " + amount + " at " + pos.x + ", " + pos.y + "\n height is " + map.get(pos.x, pos.y));
 		let xOffset = pos.x % 1.0;
 		let yOffset = pos.y % 1.0;
 		let x = Math.floor(pos.x);
