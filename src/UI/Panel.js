@@ -1,6 +1,7 @@
 import React from 'react';
+import SwitchContent from './SwitchContent';
 
-const colors = ['#ff9aa2', '#c7ceea', '#b5ead7', '#fff5ba', 'grey', 'white', 'yellow', 'purple', 'brown']
+const colors = ['#ffce00', '#0375b4', '#007849', '#252228', 'grey', 'white', 'yellow', 'purple', 'brown']
 
 class Panel extends React.Component
 {
@@ -9,11 +10,23 @@ class Panel extends React.Component
 		super(props);
 
 		this.toggle = this.toggle.bind(this);
+		this.returnData = this.returnData.bind(this);
 	}
 
 	toggle()
 	{
 		this.props.toggle(this.props.tabIndex);
+	}
+
+	returnData(data)
+	{
+		//console.log(data);
+		let newData = {
+			name: this.props.name,
+			type: this.props.type
+		}
+
+		this.props.callback({...newData, ...data});
 	}
 
 	render()
@@ -38,6 +51,9 @@ class Panel extends React.Component
 			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
 		}
 
+		if (this.props.type == 'SwitchContent')
+			var content = (<SwitchContent content = {this.props.content} callback = {this.returnData}/>);
+
 		if (this.props.open == this.props.tabIndex)
 		{ 
 			return(
@@ -45,7 +61,9 @@ class Panel extends React.Component
 					<button style = {tabStyle} onClick = {this.toggle}>
 						{this.props.name}
 					</button>
-					<div style = {panelStyle}/>
+					<div style = {panelStyle}>
+						{content}
+					</div>
 				</div>
 			);
 		}

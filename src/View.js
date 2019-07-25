@@ -4,31 +4,14 @@ import MidpointDisplacement from './Generators/MidpointDisplacement';
 import PerlinNoise from './Generators/PerlinNoise';
 import DiamondSquare from './Generators/DiamondSquare';
 import ParticleErosion from './Eroders/ParticleErosion';
-import Simulate from './Eroders/Erosion2';
 import BuildMesh from './MeshBuilder';
-import Gui from './UI/OldGui/Gui';
 import SidebarGui from './UI/SidebarGui';
 import Panel from './UI/Panel';
 import * as THREE from 'three';
 
-const gui = [
-
-	{
-		name: 'Generators',
-		content: {}
-	},
-	{
-		name: 'Eroders',
-		content: {}
-	},
-	{
-		name: 'Presets',
-		content: {}
-	},
-]
-
 const style = {
-	position: 'relative'
+	position: 'relative',
+	height: '100%',
 }
 
 class View extends React.Component
@@ -36,9 +19,9 @@ class View extends React.Component
 	constructor(props)
 	{
 		super(props);
-		this.state = {
-			gui: ''
-		};
+
+		this.handleInput = this.handleInput.bind(this);
+		this.generate = this.generate.bind(this);
 	}
 
 	componentDidMount()
@@ -60,6 +43,13 @@ class View extends React.Component
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
+		this.setState({
+			mesh: mesh,
+			scene: scene,
+			renderer: renderer,
+			camera: camera
+		});
+
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
 
@@ -76,31 +66,41 @@ class View extends React.Component
 		}
 
 		animate();
+	}
 
-		function generate(generator, params)
-		{
-			if (generator === 'Midpoint Displacement')
-				map = MidpointDisplacement(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
-			else if (generator === 'Diamond Square')
-				map = DiamondSquare(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
-			else if (generator === 'Perlin Noise')
-				map = PerlinNoise(params.Size ? params.Size : 257, params.Scale ? params.Scale : 2, params.Octaves ? params.Octaves : 12, params.Persistence ? params.Persistence : 0.4, params.Lacunarity ? params.Lacunarity : 2);
-			else
-				map = MidpointDisplacement(257, 0.4, 0.5);
+	handleInput(input)
+	{
+		if (input.name == 'Generators')
+			this.generate(input);
+	}
 
-			scene.remove(mesh);
+	generate(data)
+	{
+		this.state.scene.remove(this.state.mesh);
 
-			mesh = BuildMesh(map);
+		if (data.selected == 'Midpoint Displacement')
+			var map = MidpointDisplacement(data['Size'], data['Spread'], data['Spread Decay']);
+		else if (data.selected == 'Diamond Square')
+			var map = DiamondSquare(data['Size'], data['Spread'], data['Spread Decay']);
+		else if (data.selected == 'Perlin Noise')
+			var map = PerlinNoise(data['Size'], data['Scale'], data['Octaves'], data['Persistence'], data['Lacunarity']);
 
-			scene.add(mesh);
-		}
+		var mesh = BuildMesh(map);
+		this.state.scene.add(mesh);
+		mesh.rotation.y += 0.005;
+
+		this.setState({
+			mesh: mesh
+		});
 	}
 
 	render()
 	{
+		var guiConfig = require('./UI/GuiConfig.js').config;
+
 		return (
 			<div ref = {ref => this.view = ref} style = {style}>
-				<SidebarGui config = {gui} tabCount = '10'/>
+				<SidebarGui config = {guiConfig} tabCount = '10' callback = {this.handleInput}/>
 			</div>
 		);
 	}
