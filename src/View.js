@@ -20,14 +20,15 @@ class View extends React.Component
 	{
 		super(props);
 
-		this.handleInput = this.handleInput.bind(this);
-		this.generate = this.generate.bind(this);
+		this.spin = this.spin.bind(this);
+		this.stopSpin = this.stopSpin.bind(this);
+		this.spin = this.spin.bind(this);
+		this.renderScene = this.renderScene.bind(this);
 	}
 
 	componentDidMount()
 	{
 		var scene = new THREE.Scene();
-		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.shadowMap.enabled = true;
@@ -43,65 +44,65 @@ class View extends React.Component
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
-		this.setState({
-			mesh: mesh,
-			scene: scene,
-			renderer: renderer,
-			camera: camera
-		});
-
+		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
 
+		this.scene = scene;
+		this.renderer = renderer;
+		this.camera = camera;
+		this.mesh = mesh;
+
 		this.view.appendChild(renderer.domElement);
-
-		renderer.render(scene, camera);
-
-		function animate() 
-		{
-			requestAnimationFrame(animate);
-			mesh.rotation.y += 0.005;
-
-			renderer.render(scene, camera);
-		}
-
-		animate();
+		this.spin();
 	}
 
-	handleInput(input)
+	startSpin()
 	{
-		if (input.name == 'Generators')
-			this.generate(input);
+		requestAnimationFrame(this.spin);
 	}
 
-	generate(data)
+	stopSpin()
 	{
-		this.state.scene.remove(this.state.mesh);
+		this.mesh.rotation.y = 0;
+		cancelAnimationFrame(this.spin);
+	}
 
-		if (data.selected == 'Midpoint Displacement')
-			var map = MidpointDisplacement(data['Size'], data['Spread'], data['Spread Decay']);
-		else if (data.selected == 'Diamond Square')
-			var map = DiamondSquare(data['Size'], data['Spread'], data['Spread Decay']);
-		else if (data.selected == 'Perlin Noise')
-			var map = PerlinNoise(data['Size'], data['Scale'], data['Octaves'], data['Persistence'], data['Lacunarity']);
+	spin()
+	{
+		requestAnimationFrame(this.spin);
+		this.mesh.rotation.y += 0.005;
 
-		var mesh = BuildMesh(map);
-		this.state.scene.add(mesh);
-		mesh.rotation.y += 0.005;
+		this.renderScene();
+		//console.log("Spinnin with rotation " + this.mesh.rotation.y);
+	}
 
-		this.setState({
-			mesh: mesh
-		});
+	renderScene()
+	{
+		this.renderer.render(this.scene, this.camera);
+	}
+
+	setMesh(map)
+	{
+		this.stopSpin();
+
+		this.scene.remove(this.mesh);
+
+		var newMesh = BuildMesh(map);
+		this.scene.add(newMesh);
+
+		this.mesh = newMesh;
+
+		this.startSpin();
 	}
 
 	render()
 	{
-		var guiConfig = require('./UI/GuiConfig.js').config;
+		if (this.mesh)
+			this.setMesh(this.props.map);
 
 		return (
-			<div ref = {ref => this.view = ref} style = {style}>
-				<SidebarGui config = {guiConfig} tabCount = '10' callback = {this.handleInput}/>
-			</div>
+			<div ref = {ref => this.view = ref} style = {style}/>
 		);
 	}
 }
