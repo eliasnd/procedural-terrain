@@ -1,6 +1,6 @@
 import React from 'react';
 import Generate from './Generator';
-import ParticleErosion from './Eroders/ParticleErosion';
+import Erode from './Eroder';
 import SidebarGui from './UI/SidebarGui';
 import View from './View';
 
@@ -10,8 +10,10 @@ class Controller extends React.Component
 	{
 		super(props);
 
+		let map = Erode(Generate());
+
 		this.state = {
-			map: Generate()
+			map: map
 		}
 
 		this.handleInput = this.handleInput.bind(this);
@@ -22,6 +24,10 @@ class Controller extends React.Component
 		if (data.name == 'Generators')
 			this.setState({
 				map: Generate(data)
+			});
+		else if (data.name == 'Eroders')
+			this.setState({
+				map: Erode(this.state.map, data)
 			});
 	}
 

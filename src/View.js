@@ -1,8 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MidpointDisplacement from './Generators/MidpointDisplacement';
-import PerlinNoise from './Generators/PerlinNoise';
-import DiamondSquare from './Generators/DiamondSquare';
 import ParticleErosion from './Eroders/ParticleErosion';
 import BuildMesh from './MeshBuilder';
 import SidebarGui from './UI/SidebarGui';
@@ -40,7 +37,7 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = PerlinNoise(257, 2, 12, 0.4, 2);
+		var map = this.props.map;
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
@@ -59,13 +56,14 @@ class View extends React.Component
 
 	startSpin()
 	{
-		requestAnimationFrame(this.spin);
+		if (!this.frame)
+			this.frame = requestAnimationFrame(this.spin);
 	}
 
 	stopSpin()
 	{
-		this.mesh.rotation.y = 0;
-		cancelAnimationFrame(this.spin);
+		if (this.frame)
+			cancelAnimationFrame(this.frame);
 	}
 
 	spin()
@@ -92,8 +90,6 @@ class View extends React.Component
 		this.scene.add(newMesh);
 
 		this.mesh = newMesh;
-
-		this.startSpin();
 	}
 
 	render()

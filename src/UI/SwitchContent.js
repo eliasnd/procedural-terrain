@@ -80,7 +80,7 @@ class SwitchContent extends React.Component
 					<select onChange = {this.switch}> {options} </select>
 				</div>
 				<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
-				<button onClick =  {this.generate} style = {buttonStyle}>Generate</button>
+				<button onClick =  {this.generate} style = {buttonStyle}>{this.props.content.submit}</button>
 			</div>
 		);
 	}

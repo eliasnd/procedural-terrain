@@ -52,12 +52,52 @@ const guiConfig =
 						width: '15px'
 					}
 				}
-			}
+			},
+			submit: 'Generate'
 		}
 	},
 	{
 		name: 'Eroders',
-		content: {}
+		type: 'SwitchContent',
+		content: {
+			label: 'Eroder: ',
+			options: 
+			{
+				'Particle Erosion' : {
+					'Particles' : {
+						default: '5000'
+					},
+					'Inertia' : {
+						default: '0.3'
+					},
+					'Gravity' : {
+						default: '-9.81'
+					},
+					'Min Slope' : {
+						default: '0.01'
+					},
+					'Capacity' : {
+						default: '8'
+					},
+					'Max Steps' : {
+						default: '200'
+					},
+					'Evaporation' : {
+						default: '0.02'
+					},
+					'Erosion' : {
+						default: '0.7'
+					},
+					'Deposition' : {
+						default: '0.2'
+					},
+					'Erosion Radius' : {
+						default: '2'
+					}
+				}
+			},
+			submit: 'Erode'
+		}
 	},
 	{
 		name: 'Presets',
