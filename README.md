@@ -5,14 +5,13 @@ I originally wrote this in C# but have ported it over to Three.js for web displa
 
 ## Algorithms
 
-Currently: Midpoint Displacement
-Written, not ported: Diamond Square, Perlin Noise, Particle Hydraulic Erosion
-Planned: Exponentially Distributed Noise, Water Pipe Hydraulic Erosion
+Currently: Midpoint Displacement, Diamond Square, Perlin Noise, Particle Hydraulic Erosion
+Planned: Exponentially Distributed Noise, Water Pipe Hydraulic Erosion, Simplex Noise
 
 
 ## Dependencies
 
-Requires Three.js, React, and dat-gui.
+Requires Three.js, and React.
 
 ## Usage
 
