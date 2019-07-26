@@ -8,6 +8,28 @@ const guiConfig =
 			label: 'Generator: ',
 			options:
 			{
+				'Perlin Noise' : {
+					'Size' : {
+						default: '257',
+						width: '25px'
+					}, 
+					'Scale' : {
+						default: '2',
+						width: '15px'
+					}, 
+					'Octaves' : {
+						default: '12',
+						width: '15px'
+					}, 
+					'Persistence' : {
+						default: '0.4',
+						width: '15px'
+					}, 
+					'Lacunarity' : {
+						default: '2',
+						width: '15px'
+					}
+				},
 				'Midpoint Displacement' : {
 					'Size' : {
 						type: 'text',
@@ -32,28 +54,6 @@ const guiConfig =
 					'Spread Decay' : {
 						default: '0.5'
 					}
-				},
-				'Perlin Noise' : {
-					'Size' : {
-						default: '257',
-						width: '25px'
-					}, 
-					'Scale' : {
-						default: '2',
-						width: '15px'
-					}, 
-					'Octaves' : {
-						default: '12',
-						width: '15px'
-					}, 
-					'Persistence' : {
-						default: '0.4',
-						width: '15px'
-					}, 
-					'Lacunarity' : {
-						default: '2',
-						width: '15px'
-					}
 				}
 			},
 			submit: 'Generate'
@@ -68,7 +68,7 @@ const guiConfig =
 			{
 				'Particle Erosion' : {
 					'Particles' : {
-						default: '5000'
+						default: '50000'
 					},
 					'Inertia' : {
 						default: '0.3'
@@ -80,7 +80,7 @@ const guiConfig =
 						default: '0.01'
 					},
 					'Capacity' : {
-						default: '8'
+						default: '4'
 					},
 					'Max Steps' : {
 						default: '200'

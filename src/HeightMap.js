@@ -65,6 +65,17 @@ class HeightMap
 
 		return [xGrad, yGrad];
 	}
+
+	clone()
+	{
+		let newMap = new HeightMap(this.size);
+
+		for (let y = 0; y < this.size; y++)
+			for (let x = 0; x < this.size; x++)
+				newMap.set(x, y, this.get(x, y));
+
+		return newMap;
+	}
 }
 
 export default HeightMap;

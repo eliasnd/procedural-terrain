@@ -21,7 +21,7 @@ const BuildMesh = (map) => {
 
     geometry.computeVertexNormals();
 
-	var material = new THREE.MeshLambertMaterial({ color: 'green' });
+	var material = new THREE.MeshLambertMaterial({ color: 'grey' });
 	var mesh = new THREE.Mesh(geometry, material);
 
 	return mesh;

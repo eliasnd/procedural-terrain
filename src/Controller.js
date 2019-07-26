@@ -4,6 +4,14 @@ import Erode from './Eroder';
 import SidebarGui from './UI/SidebarGui';
 import View from './View';
 
+const undoStyle = {
+	right: '0%',
+	bottom: '0%',
+	border: 'none',
+	fontSize: '14px',
+	position: 'absolute'
+}
+
 class Controller extends React.Component
 {
 	constructor(props)
@@ -13,22 +21,33 @@ class Controller extends React.Component
 		let map = Erode(Generate());
 
 		this.state = {
+			lastMap: map,
 			map: map
 		}
 
 		this.handleInput = this.handleInput.bind(this);
+		this.undo = this.undo.bind(this);
 	}
 
 	handleInput(data)
 	{
 		if (data.name == 'Generators')
 			this.setState({
+				lastMap: this.state.map.clone(),
 				map: Generate(data)
 			});
 		else if (data.name == 'Eroders')
 			this.setState({
+				lastMap: this.state.map.clone(),
 				map: Erode(this.state.map, data)
 			});
+	}
+
+	undo()
+	{
+		this.setState({
+			map: this.state.lastMap
+		});
 	}
 
 	render()
@@ -39,6 +58,7 @@ class Controller extends React.Component
 			<div>
 				<View map = {this.state.map}/>
 				<SidebarGui config = {guiConfig} tabCount = '10' callback = {this.handleInput}/>
+				<button onClick = {this.undo} style = {undoStyle}>Undo</button>
 			</div>
 		);
 	}
