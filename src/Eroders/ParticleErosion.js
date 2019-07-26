@@ -34,7 +34,7 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		let gradient = map.grad(drop.pos.x, drop.pos.y);
 		gradient = new Vector2(gradient[0], gradient[1]);
 
-		let dir = new Vector2(drop.dir.x * inertia - gradient.x * (1-inertia), drop.dir.y * inertia - gradient.y * (1-inertia)); 	//Final direction is combination of gradient and previous dir
+		let dir = new Vector2(drop.dir.x * params.inertia - gradient.x * (1-params.inertia), drop.dir.y * params.inertia - gradient.y * (1-params.inertia)); 	//Final direction is combination of gradient and previous dir
 
 		if (dir.magnitude() == 0)							//If direction is 0, create random direction
 			dir = new Vector2(Math.random(), Math.random());
@@ -48,19 +48,19 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 	{
 		let total = 0;
 
-		let lowerY = Math.max(0, Math.ceil(pos.y - radius));						//Calculate bounds of erosion with radius
-		let upperY = Math.min(map.size, Math.floor(pos.y + radius));
-		let lowerX = Math.max(0, Math.ceil(pos.x - radius));
-		let upperX = Math.min(map.size, Math.floor(pos.x + radius));
+		let lowerY = Math.max(0, Math.ceil(pos.y - params.radius));						//Calculate bounds of erosion with radius
+		let upperY = Math.min(map.size, Math.floor(pos.y + params.radius));
+		let lowerX = Math.max(0, Math.ceil(pos.x - params.radius));
+		let upperX = Math.min(map.size, Math.floor(pos.x + params.radius));
 
 		for (let y = lowerY; y < upperY && y < map.size; y++)
 			for (let x = lowerX; x < upperX && x < map.size; x++)
-				total += radius - new Vector2(pos.x - x, pos.y - y).magnitude();		//Calculate total weights
+				total += params.radius - new Vector2(pos.x - x, pos.y - y).magnitude();		//Calculate total weights
 
 		for (let y = lowerY; y < upperY; y++)
 			for (let x = lowerX; x < upperX; x++)
 			{
-				let weight = (radius - new Vector2(pos.x - x, pos.y - y).magnitude()) / total;		//Get individual weight at pos and keep total at 1 by dividing
+				let weight = (params.radius - new Vector2(pos.x - x, pos.y - y).magnitude()) / total;		//Get individual weight at pos and keep total at 1 by dividing
 				map.change(x, y, -amount * weight);
 			}
 	}
@@ -80,7 +80,7 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
 	{
-		if (drop.steps > maxSteps)
+		if (drop.steps > params.maxSteps)
 			return false;
 
 		drop.dir = UpdateDirection(drop);
@@ -100,28 +100,28 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		}
 		else
 		{
-			let dropCapacity = Math.max(-diff, minSlope) * drop.vel * drop.water * capacity;
+			let dropCapacity = Math.max(-diff, params.minSlope) * drop.vel * drop.water * params.capacity;
 
 			if (drop.sediment > dropCapacity)
 			{
-				let amount = (drop.sediment - dropCapacity) * deposition;
+				let amount = (drop.sediment - dropCapacity) * params.deposition;
 				drop.sediment -= amount;
 				Deposit(drop.pos, amount);
 			}
 			else
 			{
-				let amount = Math.min((dropCapacity - drop.sediment) * erosion, -diff);
+				let amount = Math.min((dropCapacity - drop.sediment) * params.erosion, -diff);
 				drop.sediment += amount;
 				Erode(drop.pos, amount)
 			}
 		}
 
-		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * gravity, 0));
+		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * params.gravity, 0));
 
 		if (drop.vel == 0)
 			return false;
 
-		drop.water = drop.water * (1-evaporation);
+		drop.water = drop.water * (1-params.evaporation);
 		drop.pos = newPos;
 		drop.steps++;
 

@@ -22,7 +22,10 @@ const guiConfig =
 					}
 				},
 				'Diamond Square' : {
-					'Size' : {width: '25px'}, 
+					'Size' : {
+						default: '257',
+						width: '25px'
+					}, 
 					'Spread' : {
 						default: '0.8'
 					}, 

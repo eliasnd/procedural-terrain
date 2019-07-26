@@ -72,7 +72,6 @@ class View extends React.Component
 		this.mesh.rotation.y += 0.005;
 
 		this.renderScene();
-		//console.log("Spinnin with rotation " + this.mesh.rotation.y);
 	}
 
 	renderScene()

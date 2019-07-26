@@ -10,7 +10,10 @@ const Generate = (data) =>
 	if (data.selected == 'Midpoint Displacement')
 		return MidpointDisplacement(data['Size'], data['Spread'], data['Spread Decay']);
 	else if (data.selected == 'Diamond Square')
+	{
+		console.log("Diamond Square");
 		return DiamondSquare(data['Size'], data['Spread'], data['Spread Decay']);
+	}
 	else if (data.selected == 'Perlin Noise')
 		return PerlinNoise(data['Size'], data['Scale'], data['Octaves'], data['Persistence'], data['Lacunarity']);
 }
