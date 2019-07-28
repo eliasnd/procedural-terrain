@@ -5,6 +5,7 @@ import BuildMesh from './MeshBuilder';
 import SidebarGui from './UI/SidebarGui';
 import Panel from './UI/Panel';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 const style = {
 	position: 'relative',
@@ -45,6 +46,9 @@ class View extends React.Component
 		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
+
+		var controls = new OrbitControls(camera, renderer.domElement);
+		controls.update();
 
 		this.scene = scene;
 		this.renderer = renderer;
@@ -97,7 +101,6 @@ class View extends React.Component
 	addExtra(obj)
 	{
 		this.stopSpin();
-		console.log(obj);
 		this.scene.add(obj);
 		this.extras.push(obj);
 		//this.scene.remove(this.mesh);

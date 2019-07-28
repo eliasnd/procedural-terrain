@@ -44,12 +44,14 @@ const makeSphere = (x, y, z, color) =>
 	return mesh;
 }
 
+const lockDebug = undefined;
+
 const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, maxSteps, evaporation, erosion, deposition, radius, callback) =>
 {
 	if (erosions > 10)
-		var debug = false;
+		var debug = lockDebug ? lockDebug : false;
 	else
-		var debug = true;
+		var debug = lockDebug ? lockDebug : true;
 
 	radius = parseInt(radius);
 
@@ -89,7 +91,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 			}
 
 		if (debug)
-			//callback(makeSphere(0, 0, 0, 0xff0000));
 			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0xff0000));
 	}
 
@@ -106,27 +107,37 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		map.change(x+1, y+1, amount * xOffset * yOffset);
 
 		if (debug)
-			//callback(makeSphere(0, 0, 0, 0x0000ff));
 			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0x0000ff));
 	}
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
 	{
-		if (drop.steps > maxSteps)
+		if (drop.steps > maxSteps || drop.water == 0)
 			return false;
+
+		if (debug)
+			console.log(drop.steps + ": At " + drop.pos.x.toFixed(2) + ", " + drop.pos.y.toFixed(2) + ". Height is " + map.get(drop.pos.x, drop.pos.y));
 
 		drop.dir = UpdateDirection(drop);
 
 		let newPos = new Vector2(drop.pos.x + drop.dir.x, drop.pos.y + drop.dir.y);
 
-		if (map.outOfBounds(newPos.x, newPos.y) || (Math.floor(newPos.x) == Math.floor(drop.pos.x) && Math.floor(newPos.y) == Math.floor(drop.pos.y)))
+		if (debug)
+			console.log("		Newpos is " + newPos.x.toFixed(2) + ", " + newPos.y.toFixed(2));
+
+		if (map.outOfBounds(newPos.x, newPos.y))// || (Math.floor(newPos.x) == Math.floor(drop.pos.x) && Math.floor(newPos.y) == Math.floor(drop.pos.y)))
 			return false;
 
 		let diff = map.get(newPos.x, newPos.y) - map.get(drop.pos.x, drop.pos.y);
 
+		if (debug)
+			console.log("		Diff is " + diff);
+
 		if (diff > 0)
 		{
 			let amount = Math.min(drop.sediment, diff);
+			if (debug)
+				console.log("		Going uphill. Depositing " + amount);
 			drop.sediment -= amount;
 			Deposit(drop.pos, amount);
 		}
@@ -137,18 +148,25 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 			if (drop.sediment > dropCapacity)
 			{
 				let amount = (drop.sediment - dropCapacity) * deposition;
+				if (debug)
+					console.log("		Over capacity: " + drop.sediment.toFixed(5) + "/" + dropCapacity.toFixed(5) + ". Depositing " + amount.toFixed(5));
 				drop.sediment -= amount;
 				Deposit(drop.pos, amount);
 			}
 			else
 			{
 				let amount = Math.min((dropCapacity - drop.sediment) * erosion, -diff);
+				if (debug)
+					console.log("		Under capacity. Eroding " + amount.toFixed(5));
 				drop.sediment += amount;
 				Erode(drop.pos, amount)
 			}
 		}
 
 		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * gravity, 0));
+
+		if (debug)
+			console.log("		Velocity is now " + drop.vel)
 
 		if (drop.vel == 0)
 			return false;
