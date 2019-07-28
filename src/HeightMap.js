@@ -1,3 +1,6 @@
+var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
+var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
+
 class HeightMap 
 {
 	constructor(size)
@@ -21,10 +24,13 @@ class HeightMap
 			let nextX = Math.min(this.size-1, unitX+1);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			let top = this.map[unitY * this.size + unitX] * (1-xOffset) + this.map[unitY * this.size + nextX] * xOffset;
-			let bottom = this.map[nextY * this.size + unitX] * (1-xOffset) + this.map[nextY * this.size + nextX] * xOffset;
-			return top * (1-yOffset) + bottom * yOffset;
-		}
+			//let top = lerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], xOffset);
+			//let top = this.map[unitY * this.size + unitX] * (1-xOffset) + this.map[unitY * this.size + nextX] * xOffset;
+			//let bottom = lerp(this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], xOffset);
+			//let bottom = this.map[nextY * this.size + unitX] * (1-xOffset) + this.map[nextY * this.size + nextX] * xOffset;
+			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], xOffset, yOffset);
+			//return top * (1-yOffset) + bottom * yOffset;
+		}	
 	}
 
 	set(x, y, val)
@@ -44,24 +50,22 @@ class HeightMap
 
 	grad(x, y)
 	{
-		let unitX = Math.floor(x);
-		let unitY = Math.floor(y);
 		let xOffset = x % 1.0;
 		let yOffset = y % 1.0;
+		let unitX = Math.floor(x);
+		let unitY = Math.floor(y);
 		let nextX = Math.min(this.size-1, unitX + 1);
 		let nextY = Math.min(this.size-1, unitY + 1);
-
-		//console.log("Corners are " + this.get(unitX, unitY) + ", " + this.get(nextX, unitY) + ", " + this.get(unitX, nextY) + ", " + this.get(nextX, nextY));
 
 		let top = this.get(nextX, unitY) - this.get(unitX, unitY);				//Gradients along each edge of square
 		let bottom = this.get(nextX, nextY) - this.get(unitX, nextY);
 		let left = this.get(unitX, nextY) - this.get(unitX, unitY);
 		let right = this.get(nextX, nextY) - this.get(nextX, unitY);
 
-		let xGrad = top * (1-yOffset) + bottom * yOffset;
-		let yGrad = left * (1-xOffset) + right * xOffset;
-
-		//console.log("Grad is " + xGrad + ", " + yGrad);
+		let xGrad = lerp(top, bottom, yOffset);
+		//let xGrad = top * (1-yOffset) + bottom * yOffset;
+		let yGrad = lerp(left, right, xOffset);
+		//let yGrad = left * (1-xOffset) + right * xOffset;
 
 		return [xGrad, yGrad];
 	}

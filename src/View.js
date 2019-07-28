@@ -21,6 +21,7 @@ class View extends React.Component
 		this.stopSpin = this.stopSpin.bind(this);
 		this.spin = this.spin.bind(this);
 		this.renderScene = this.renderScene.bind(this);
+		this.clearExtras = this.clearExtras.bind(this);
 	}
 
 	componentDidMount()
@@ -49,6 +50,7 @@ class View extends React.Component
 		this.renderer = renderer;
 		this.camera = camera;
 		this.mesh = mesh;
+		this.extras = [];
 
 		this.view.appendChild(renderer.domElement);
 		this.spin();
@@ -69,7 +71,7 @@ class View extends React.Component
 	spin()
 	{
 		requestAnimationFrame(this.spin);
-		this.mesh.rotation.y += 0.005;
+		//this.mesh.rotation.y += 0.005;
 
 		this.renderScene();
 	}
@@ -89,12 +91,34 @@ class View extends React.Component
 		this.scene.add(newMesh);
 
 		this.mesh = newMesh;
+		this.clearExtras();
+	}
+
+	addExtra(obj)
+	{
+		this.stopSpin();
+		console.log(obj);
+		this.scene.add(obj);
+		this.extras.push(obj);
+		//this.scene.remove(this.mesh);
+
+		//console.log(this.extras);
+	}
+	
+	clearExtras()
+	{
+		this.extras.map((extra) => {this.scene.remove(extra)});
+		this.extras = [];
 	}
 
 	render()
 	{
 		if (this.mesh)
+		{
 			this.setMesh(this.props.map);
+			if (this.props.extras)
+				this.props.extras.map((extra) => {this.addExtra(extra)});
+		}
 
 		return (
 			<div ref = {ref => this.view = ref} style = {style}/>

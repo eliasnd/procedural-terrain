@@ -18,15 +18,27 @@ class Controller extends React.Component
 	{
 		super(props);
 
-		let map = Erode(Generate());
+		let map = Erode(Generate(), this.addExtra);
 
 		this.state = {
 			lastMap: map,
-			map: map
+			map: map,
+			extras: []
 		}
 
 		this.handleInput = this.handleInput.bind(this);
 		this.undo = this.undo.bind(this);
+		this.addExtra = this.addExtra.bind(this);
+	}
+
+	addExtra(extra)
+	{
+		let extras = this.state.extras;
+		extras.push(extra);
+
+		this.setState({
+			extras: extras
+		});
 	}
 
 	handleInput(data)
@@ -39,7 +51,7 @@ class Controller extends React.Component
 		else if (data.name == 'Eroders')
 			this.setState({
 				lastMap: this.state.map.clone(),
-				map: Erode(this.state.map, data)
+				map: Erode(this.state.map, data, this.addExtra)
 			});
 	}
 
@@ -56,7 +68,7 @@ class Controller extends React.Component
 
 		return (
 			<div>
-				<View map = {this.state.map}/>
+				<View map = {this.state.map} extras = {this.state.extras}/>
 				<SidebarGui config = {guiConfig} tabCount = '10' callback = {this.handleInput}/>
 				<button onClick = {this.undo} style = {undoStyle}>Undo</button>
 			</div>

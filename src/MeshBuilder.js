@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const height = 8;
+const height = 4;
 const meshSize = 33;
 
 const BuildMesh = (map) => {

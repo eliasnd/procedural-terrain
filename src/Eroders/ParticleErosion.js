@@ -1,5 +1,6 @@
 import HeightMap from './../HeightMap';
 import Vector2 from './../Vectors';
+import * as THREE from 'three';
 
 var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
@@ -27,8 +28,29 @@ const params = {
 	radius: 2			//Radius of erosion
 }
 
-const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, maxSteps, evaporation, erosion, deposition, radius) =>
+const makeSphere = (x, y, z, color) =>
 {
+	const height = 4;
+	const meshSize = 33;
+	var sizeFactor = meshSize / 257;
+
+	let geometry = new THREE.SphereGeometry(0.05, 32, 32);
+	geometry.computeVertexNormals();
+	let mat = new THREE.MeshLambertMaterial( {color: color} );
+	let mesh = new THREE.Mesh(geometry, mat);
+
+	mesh.position.set((x - 257/2) * sizeFactor, y * height - height/2, (z - 257/2) * sizeFactor);
+
+	return mesh;
+}
+
+const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, maxSteps, evaporation, erosion, deposition, radius, callback) =>
+{
+	if (erosions > 10)
+		var debug = false;
+	else
+		var debug = true;
+
 	radius = parseInt(radius);
 
 	const UpdateDirection = (drop) =>						//Updates direction based on previous direction and gradient
@@ -57,7 +79,7 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 		for (let y = lowerY; y < upperY && y < map.size; y++)
 			for (let x = lowerX; x < upperX && x < map.size; x++)
-				total += radius - new Vector2(pos.x - x, pos.y - y).magnitude();		//Calculate total weights
+				total += radius - (new Vector2(pos.x - x, pos.y - y)).magnitude();		//Calculate total weights
 
 		for (let y = lowerY; y < upperY; y++)
 			for (let x = lowerX; x < upperX; x++)
@@ -65,6 +87,10 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 				let weight = (radius - new Vector2(pos.x - x, pos.y - y).magnitude()) / total;		//Get individual weight at pos and keep total at 1 by dividing
 				map.change(x, y, -amount * weight);
 			}
+
+		if (debug)
+			//callback(makeSphere(0, 0, 0, 0xff0000));
+			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0xff0000));
 	}
 
 	const Deposit = (pos, amount) =>		//Deposit amount at four corners of coord
@@ -78,6 +104,10 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		map.change(x, y+1, amount * (1-xOffset) * yOffset);
 		map.change(x+1, y, amount * xOffset * (1-yOffset));
 		map.change(x+1, y+1, amount * xOffset * yOffset);
+
+		if (debug)
+			//callback(makeSphere(0, 0, 0, 0x0000ff));
+			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0x0000ff));
 	}
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
@@ -143,6 +173,9 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
 		drop.dir = new Vector2(-drop.dir[0], -drop.dir[1]);
+
+		if (debug)
+			callback(makeSphere(drop.pos.x, map.get(drop.pos.x, drop.pos.y), drop.pos.y, 0x00ff00));
 
 		while (MoveDrop(drop))
 		{ }

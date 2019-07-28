@@ -6,8 +6,9 @@
     "dat-gui": "^0.5.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1",
-    "three": "^0.106.2"
+    "react-scripts": "^3.0.1",
+    "three": "^0.106.2",
+    "typescript": "^3.5.3"
   },
   "scripts": {
     "start": "react-scripts start",
