@@ -116,7 +116,7 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 			return false;
 
 		if (debug)
-			console.log(drop.steps + ": At " + drop.pos.x.toFixed(2) + ", " + drop.pos.y.toFixed(2) + ". Height is " + map.get(drop.pos.x, drop.pos.y));
+			console.log(drop.steps + ": At " + drop.pos.x.toFixed(2) + ", " + drop.pos.y.toFixed(2) + ". Height is " + map.get(drop.pos.x, drop.pos.y).toFixed(5));
 
 		drop.dir = UpdateDirection(drop);
 
@@ -131,13 +131,13 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		let diff = map.get(newPos.x, newPos.y) - map.get(drop.pos.x, drop.pos.y);
 
 		if (debug)
-			console.log("		Diff is " + diff);
+			console.log("		Diff is " + diff.toFixed(5));
 
 		if (diff > 0)
 		{
 			let amount = Math.min(drop.sediment, diff);
 			if (debug)
-				console.log("		Going uphill. Depositing " + amount);
+				console.log("		Going uphill. Depositing " + amount.toFixed(5));
 			drop.sediment -= amount;
 			Deposit(drop.pos, amount);
 		}
