@@ -68,10 +68,10 @@ const guiConfig =
 			{
 				'Particle Erosion' : {
 					'Particles' : {
-						default: '50000'
+						default: '10000'
 					},
 					'Inertia' : {
-						default: '0.3'
+						default: '0.1'
 					},
 					'Gravity' : {
 						default: '-9.81'
@@ -83,16 +83,16 @@ const guiConfig =
 						default: '4'
 					},
 					'Max Steps' : {
-						default: '200'
+						default: '64'
 					},
 					'Evaporation' : {
 						default: '0.02'
 					},
 					'Erosion' : {
-						default: '0.7'
+						default: '0.3'
 					},
 					'Deposition' : {
-						default: '0.2'
+						default: '0.3'
 					},
 					'Erosion Radius' : {
 						default: '2'

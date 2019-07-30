@@ -58,7 +58,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 	const UpdateDirection = (drop) =>						//Updates direction based on previous direction and gradient
 	{
 		let gradient = map.grad(drop.pos.x, drop.pos.y);
-		gradient = new Vector2(gradient[0], gradient[1]);
 
 		let dir = new Vector2(drop.dir.x * inertia - gradient.x * (1-inertia), drop.dir.y * inertia - gradient.y * (1-inertia)); 	//Final direction is combination of gradient and previous dir
 
@@ -182,15 +181,16 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 	{
 		let drop = {
 			pos: new Vector2(Math.random() * map.size, Math.random() * map.size),
+			//pos: new Vector2(100, 100),
 			dir: new Vector2(0, 0),
-			vel: 0,
+			vel: 1,
 			water: 1,
 			sediment: 0,
 			steps: 0
 		}
 
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
-		drop.dir = new Vector2(-drop.dir[0], -drop.dir[1]);
+		drop.dir = new Vector2(-drop.dir.x, -drop.dir.y);
 
 		if (debug)
 			callback(makeSphere(drop.pos.x, map.get(drop.pos.x, drop.pos.y), drop.pos.y, 0x00ff00));
