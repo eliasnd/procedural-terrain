@@ -28,31 +28,8 @@ const params = {
 	radius: 2			//Radius of erosion
 }
 
-const makeSphere = (x, y, z, color) =>
-{
-	const height = 4;
-	const meshSize = 33;
-	var sizeFactor = meshSize / 257;
-
-	let geometry = new THREE.SphereGeometry(0.05, 32, 32);
-	geometry.computeVertexNormals();
-	let mat = new THREE.MeshLambertMaterial( {color: color} );
-	let mesh = new THREE.Mesh(geometry, mat);
-
-	mesh.position.set((x - 257/2) * sizeFactor, y * height - height/2, (z - 257/2) * sizeFactor);
-
-	return mesh;
-}
-
-const lockDebug = undefined;
-
 const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, maxSteps, evaporation, erosion, deposition, radius, callback) =>
 {
-	if (erosions > 10)
-		var debug = lockDebug ? lockDebug : false;
-	else
-		var debug = lockDebug ? lockDebug : true;
-
 	radius = parseInt(radius);
 
 	const UpdateDirection = (drop) =>						//Updates direction based on previous direction and gradient
@@ -88,9 +65,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 				let weight = (radius - new Vector2(pos.x - x, pos.y - y).magnitude()) / total;		//Get individual weight at pos and keep total at 1 by dividing
 				map.change(x, y, -amount * weight);
 			}
-
-		if (debug)
-			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0xff0000));
 	}
 
 	const Deposit = (pos, amount) =>		//Deposit amount at four corners of coord
@@ -104,9 +78,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		map.change(x, y+1, amount * (1-xOffset) * yOffset);
 		map.change(x+1, y, amount * xOffset * (1-yOffset));
 		map.change(x+1, y+1, amount * xOffset * yOffset);
-
-		if (debug)
-			callback(makeSphere(pos.x, map.get(pos.x, pos.y), pos.y, 0x0000ff));
 	}
 
 	const MoveDrop = (drop) => 			//Moves the drop one step -- i.e. over one coordinate space
@@ -114,29 +85,18 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 		if (drop.steps > maxSteps || drop.water == 0)
 			return false;
 
-		if (debug)
-			console.log(drop.steps + ": At " + drop.pos.x.toFixed(2) + ", " + drop.pos.y.toFixed(2) + ". Height is " + map.get(drop.pos.x, drop.pos.y).toFixed(5));
-
 		drop.dir = UpdateDirection(drop);
 
 		let newPos = new Vector2(drop.pos.x + drop.dir.x, drop.pos.y + drop.dir.y);
 
-		if (debug)
-			console.log("		Newpos is " + newPos.x.toFixed(2) + ", " + newPos.y.toFixed(2));
-
-		if (map.outOfBounds(newPos.x, newPos.y))// || (Math.floor(newPos.x) == Math.floor(drop.pos.x) && Math.floor(newPos.y) == Math.floor(drop.pos.y)))
+		if (map.outOfBounds(newPos.x, newPos.y))
 			return false;
 
 		let diff = map.get(newPos.x, newPos.y) - map.get(drop.pos.x, drop.pos.y);
 
-		if (debug)
-			console.log("		Diff is " + diff.toFixed(5));
-
 		if (diff > 0)
 		{
 			let amount = Math.min(drop.sediment, diff);
-			if (debug)
-				console.log("		Going uphill. Depositing " + amount.toFixed(5));
 			drop.sediment -= amount;
 			Deposit(drop.pos, amount);
 		}
@@ -147,25 +107,18 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 			if (drop.sediment > dropCapacity)
 			{
 				let amount = (drop.sediment - dropCapacity) * deposition;
-				if (debug)
-					console.log("		Over capacity: " + drop.sediment.toFixed(5) + "/" + dropCapacity.toFixed(5) + ". Depositing " + amount.toFixed(5));
 				drop.sediment -= amount;
 				Deposit(drop.pos, amount);
 			}
 			else
 			{
 				let amount = Math.min((dropCapacity - drop.sediment) * erosion, -diff);
-				if (debug)
-					console.log("		Under capacity. Eroding " + amount.toFixed(5));
 				drop.sediment += amount;
 				Erode(drop.pos, amount)
 			}
 		}
 
 		drop.vel = Math.sqrt(Math.max(Math.pow(drop.vel, 2) + diff * gravity, 0));
-
-		if (debug)
-			console.log("		Velocity is now " + drop.vel)
 
 		if (drop.vel == 0)
 			return false;
@@ -181,7 +134,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 	{
 		let drop = {
 			pos: new Vector2(Math.random() * map.size, Math.random() * map.size),
-			//pos: new Vector2(100, 100),
 			dir: new Vector2(0, 0),
 			vel: 1,
 			water: 1,
@@ -191,9 +143,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 		drop.dir = map.grad(drop.pos.x, drop.pos.y);
 		drop.dir = new Vector2(-drop.dir.x, -drop.dir.y);
-
-		if (debug)
-			callback(makeSphere(drop.pos.x, map.get(drop.pos.x, drop.pos.y), drop.pos.y, 0x00ff00));
 
 		while (MoveDrop(drop))
 		{ }
