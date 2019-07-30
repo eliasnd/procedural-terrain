@@ -1,28 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MidpointDisplacement from './Generators/MidpointDisplacement';
-import PerlinNoise from './Generators/PerlinNoise';
-import DiamondSquare from './Generators/DiamondSquare';
 import ParticleErosion from './Eroders/ParticleErosion';
-import Simulate from './Eroders/Erosion2';
 import BuildMesh from './MeshBuilder';
-import Gui from './UI/Gui';
+import SidebarGui from './UI/SidebarGui';
+import Panel from './UI/Panel';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+
+const style = {
+	position: 'relative',
+	height: '100%',
+}
 
 class View extends React.Component
 {
 	constructor(props)
 	{
 		super(props);
-		this.state = {
-			gui: ''
-		};
+
+		this.spin = this.spin.bind(this);
+		this.stopSpin = this.stopSpin.bind(this);
+		this.spin = this.spin.bind(this);
+		this.renderScene = this.renderScene.bind(this);
+		this.clearExtras = this.clearExtras.bind(this);
 	}
 
 	componentDidMount()
 	{
 		var scene = new THREE.Scene();
-		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.shadowMap.enabled = true;
@@ -34,58 +39,92 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = PerlinNoise(257, 2, 12, 0.4, 2);
-		map = ParticleErosion(map, 10000);
-		//map = Simulate(map, 10000);
+		var map = this.props.map;
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
+		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
 
-		document.body.appendChild(renderer.domElement);
+		var controls = new OrbitControls(camera, renderer.domElement);
+		controls.update();
 
-		renderer.render(scene, camera);
+		this.scene = scene;
+		this.renderer = renderer;
+		this.camera = camera;
+		this.mesh = mesh;
+		this.extras = [];
 
-		function animate() 
-		{
-			requestAnimationFrame(animate);
-			mesh.rotation.y += 0.005;
+		this.view.appendChild(renderer.domElement);
+		this.spin();
+	}
 
-			renderer.render(scene, camera);
-		}
+	startSpin()
+	{
+		if (!this.frame)
+			this.frame = requestAnimationFrame(this.spin);
+	}
 
-		animate();
+	stopSpin()
+	{
+		if (this.frame)
+			cancelAnimationFrame(this.frame);
+	}
 
-		var gui = <Gui callback = {generate}/>;
+	spin()
+	{
+		requestAnimationFrame(this.spin);
+		//this.mesh.rotation.y += 0.005;
 
-		function generate(generator, params)
-		{
-			if (generator === 'Midpoint Displacement')
-				map = MidpointDisplacement(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
-			else if (generator === 'Diamond Square')
-				map = DiamondSquare(params.Size ? params.Size : 257, params.Spread ? params.Spread : 0.4, params['Spread Decay'] ? params['Spread Decay'] : 0.5);
-			else if (generator === 'Perlin Noise')
-				map = PerlinNoise(params.Size ? params.Size : 257, params.Scale ? params.Scale : 2, params.Octaves ? params.Octaves : 12, params.Persistence ? params.Persistence : 0.4, params.Lacunarity ? params.Lacunarity : 2);
-			else
-				map = MidpointDisplacement(257, 0.4, 0.5);
+		this.renderScene();
+	}
 
-			scene.remove(mesh);
+	renderScene()
+	{
+		this.renderer.render(this.scene, this.camera);
+	}
 
-			mesh = BuildMesh(map);
+	setMesh(map)
+	{
+		this.stopSpin();
 
-			scene.add(mesh);
-		}
+		this.scene.remove(this.mesh);
 
-		this.setState({gui: gui});
+		var newMesh = BuildMesh(map);
+		this.scene.add(newMesh);
+
+		this.mesh = newMesh;
+		this.clearExtras();
+	}
+
+	addExtra(obj)
+	{
+		this.stopSpin();
+		this.scene.add(obj);
+		this.extras.push(obj);
+		//this.scene.remove(this.mesh);
+
+		//console.log(this.extras);
+	}
+	
+	clearExtras()
+	{
+		this.extras.map((extra) => {this.scene.remove(extra)});
+		this.extras = [];
 	}
 
 	render()
 	{
+		if (this.mesh)
+		{
+			this.setMesh(this.props.map);
+			if (this.props.extras)
+				this.props.extras.map((extra) => {this.addExtra(extra)});
+		}
+
 		return (
-			<div>
-				{this.state.gui}
-			</div>
+			<div ref = {ref => this.view = ref} style = {style}/>
 		);
 	}
 }

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const height = 8;
+const height = 4;
 const meshSize = 33;
 
 const BuildMesh = (map) => {
@@ -21,7 +21,7 @@ const BuildMesh = (map) => {
 
     geometry.computeVertexNormals();
 
-	var material = new THREE.MeshLambertMaterial({ color: 'green' });
+	var material = new THREE.MeshLambertMaterial({ color: 'grey' });
 	var mesh = new THREE.Mesh(geometry, material);
 
 	return mesh;

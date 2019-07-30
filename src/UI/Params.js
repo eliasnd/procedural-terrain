@@ -1,24 +1,32 @@
 import React from 'react';
-//import Parameter from './Parameter';
 
-const style = {
+const paramStyle = {
+	paddingTop: '5%',
+	display: 'block',
 	textAlign: 'right',
-	paddingRight: '5%',
-	paddingTop: '5px',
-	position: 'relative'
+	paddingRight: '15%'
+}
+
+const labelStyle = {
+	display: 'inline-block'
+}
+
+const inputStyle = {
+	textAlign: 'center',
+	display: 'inline-block'
 }
 
 const Parameter = function(props)
 {
 	var handleChange = (event) =>
 	{
-		props.callback(props.text, event.target.value);
+		props.callback(props.label, event.target.value);
 	}
 
 	return (
-		<div style = {style}>
-			<span>{props.text}: </span>
-			<input type = 'text' style = {{width: props.width}} onChange = {handleChange}/>
+		<div style = {paramStyle}>
+			<span>{props.label}: </span>
+			<input type = 'text' onChange = {handleChange} style = {inputStyle}/>
 		</div>
 	);
 }
@@ -29,37 +37,31 @@ class Params extends React.Component
 	{
 		super(props);
 		this.state = {
-			generator: this.props.generator,
-			params: [],
-			data: {}
+			params: {}
 		}
-
 		this.getParam = this.getParam.bind(this);
 	}
 
-	getParam(param, value)
+	getParam(label, value)
 	{
-		var data = this.state.data;
-		data[param] = value;
-		this.setState({data: data});
+		var params = this.state.params;
+		params[label] = value;
 
-		this.props.callback(data);
+		this.props.callback(params);
+
+		this.setState({
+			params: params
+		});
 	}
 
 	render()
 	{
-		var params;
-		if (this.props.generator === 'Midpoint Displacement')
-			params = ['Size', 'Spread', 'Spread Decay'];
-		else if (this.props.generator === 'Diamond Square')
-			params = ['Size', 'Spread', 'Spread Decay'];
-		else
-			params = ['Size', 'Scale', 'Octaves', 'Persistence', 'Lacunarity'];
+		let params = Object.keys(this.props.options[this.props.selected]);
 
-		params = params.map((param) => <Parameter key = {param} text = {param} width = {this.props.width} callback = {this.getParam}/>);
+		params = params.map(param => <Parameter key = {param} label = {param} callback = {this.getParam}/>);
 
 		return (
-			<div style = {style}>
+			<div>
 				{params}
 			</div>
 		);

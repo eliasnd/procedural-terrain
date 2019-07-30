@@ -16,10 +16,12 @@ const Generator = function(props)
 
 	return (
 		<div style = {style}>
-			<span>Generator: </span>
-			<select default = {props.options[0]} onChange = {handleChange} id = 'generatorSelect'>
-				{options}
-			</select>
+			<div>
+				<span>Generator: </span>
+				<select default = {props.options[0]} onChange = {handleChange} id = 'generatorSelect'>
+					{options}
+				</select>
+			</div>
 		</div>
 	);
 } 

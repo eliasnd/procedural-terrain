@@ -1,10 +1,10 @@
 import React from 'react';
-import View from './View.js';
+import Controller from './Controller.js';
 
 function App() {
   return (
     <div className="App">
-      <View/>
+      <Controller/>
     </div>
   );
 }
