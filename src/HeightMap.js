@@ -62,10 +62,7 @@ class HeightMap
 		let yGrad = lerp(left, right, xOffset);
 		//let yGrad = left * (1-xOffset) + right * xOffset;
 
-		return {
-			x: xGrad,
-			y: yGrad
-		};
+		return [xGrad, yGrad];
 	}
 
 	clone()
