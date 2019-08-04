@@ -35,6 +35,8 @@ class HeightMap
 
 	change(x, y, val)
 	{
+		//if (val > 0.05)
+		//	console.log("Changed " + x + ", " + y + " by " + val);
 		this.map[y * this.size + x] += val;
 	}
 
