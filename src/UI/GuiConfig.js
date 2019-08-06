@@ -68,7 +68,8 @@ const guiConfig =
 			{
 				'Particle Erosion' : {
 					'Particles' : {
-						default: '10000'
+						default: '10000',
+						type: 'number'
 					},
 					'Inertia' : {
 						default: '0.1'

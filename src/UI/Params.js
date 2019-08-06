@@ -26,7 +26,7 @@ const Parameter = function(props)
 	return (
 		<div style = {paramStyle}>
 			<span>{props.label}: </span>
-			<input type = 'text' onChange = {handleChange} style = {inputStyle}/>
+			<input type = {props.type} onChange = {handleChange} style = {inputStyle} defaultValue = {props.default}/>
 		</div>
 	);
 }
@@ -56,9 +56,10 @@ class Params extends React.Component
 
 	render()
 	{
-		let params = Object.keys(this.props.options[this.props.selected]);
+		let config = this.props.options[this.props.selected];
+		let params = Object.keys(config);
 
-		params = params.map(param => <Parameter key = {param} label = {param} callback = {this.getParam}/>);
+		params = params.map(param => <Parameter key = {param} label = {param} type = {config[param].type} default = {config[param].default} callback = {this.getParam}/>);
 
 		return (
 			<div>
