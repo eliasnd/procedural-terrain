@@ -118,6 +118,7 @@ class View extends React.Component
 	{
 		if (this.mesh)
 		{
+			this.clearExtras();
 			this.setMesh(this.props.map);
 			if (this.props.extras)
 				this.props.extras.map((extra) => {this.addExtra(extra)});

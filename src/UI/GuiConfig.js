@@ -95,7 +95,7 @@ const guiConfig =
 						default: '0.3'
 					},
 					'Erosion Radius' : {
-						default: '2'
+						default: '1'
 					}
 				}
 			},

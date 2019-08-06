@@ -24,7 +24,9 @@ class HeightMap
 			let nextX = Math.min(this.size-1, unitX+1);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], xOffset, yOffset);
+			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], 
+						  this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], 
+						  xOffset, yOffset);
 		}
 	}
 
@@ -35,8 +37,6 @@ class HeightMap
 
 	change(x, y, val)
 	{
-		//if (val > 0.05)
-		//	console.log("Changed " + x + ", " + y + " by " + val);
 		this.map[y * this.size + x] += val;
 	}
 

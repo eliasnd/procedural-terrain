@@ -51,7 +51,7 @@ class Controller extends React.Component
 		else if (data.name == 'Eroders')
 			this.setState({
 				lastMap: this.state.map.clone(),
-				map: Erode(this.state.map, data)
+				map: Erode(this.state.map, data, this.addExtra)
 			});
 	}
 

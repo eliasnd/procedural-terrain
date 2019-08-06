@@ -29,19 +29,56 @@ const params = {
 	minSedimentCapacity: .01
 }
 
+const makeSphere = (x, y, z, color) =>
+{
+	const height = 4;
+	const meshSize = 33;
+	var sizeFactor = meshSize / 257;
+
+	let geometry = new THREE.SphereGeometry(0.05, 32, 32);
+	geometry.computeVertexNormals();
+	let mat = new THREE.MeshLambertMaterial( {color: color} );
+	let mesh = new THREE.Mesh(geometry, mat);
+
+	mesh.position.set((x - 257/2) * sizeFactor, y * height - height/2, (z - 257/2) * sizeFactor);
+
+	return mesh;
+}
+
 const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, maxSteps, evaporation, erosion, deposition, radius, callback) =>
 {
+	if (erosions > 10)
+		var debug = false;
+	else
+		var debug = true;
+
 	radius = parseInt(radius);
 
-	let weights = new Float32Array((2*radius)**2);
+	const diameter = radius * 2;
+
+	let weights = new Float32Array(diameter**2);
+
+	let totalWeight = 0;
+
+	for (let y = 0; y < diameter; y++)
+		for (let x = 0; x < diameter; x++)
+		{
+			let weight = Math.max(radius - Math.sqrt((x - (radius-1))**2 + (y - (radius-1))**2), 0);
+			totalWeight += weight;
+			weights[y * diameter + x] = weight;
+		}
+
+	weights.map(weight => { return weight / totalWeight; });
 
 	for (let d = 0; d < erosions; d++)
 	{
 		let pos = [Math.random() * map.size, Math.random() * map.size];
-		let	dir = [0, 0];
-		let vel = 0;
+		let	dir = [map.grad(pos[0], pos[1])[0], map.grad(pos[0], pos[1])[1]];
+		let vel = 1;
 		let water = 1;
 		let sediment = 0;
+
+		if (debug) callback(makeSphere(pos[0], map.get(pos[0], pos[1]), pos[1], 0xffffff));
 
 		for (let s = 0; s < maxSteps; s++)
 		{
@@ -55,13 +92,15 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 			dir = [dir[0] * inertia - gradient[0] * (1-inertia), dir[1] * inertia - gradient[1] * (1-inertia)];
 
-			if (dir[0] == dir[1] == 0)
+			if (dir[0] == 0 && dir[1] == 0)
 				dir = [Math.random(), Math.random()];
 
 			let dirLength = Math.sqrt(dir[0]**2 + dir[1]**2);
 
 			dir[0] /= dirLength;
 			dir[1] /= dirLength;
+
+			//if (debug) console.log("Dir is " + dir[0] + ", " + dir[1]);
 
 			let newPos = [pos[0] + dir[0], pos[1] + dir[1]];
 
@@ -70,10 +109,11 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 
 			let diff = map.get(newPos[0], newPos[1]) - map.get(pos[0], pos[1]);
 
-			let sedimentCapacity = Math.max(-diff, minSlope) * vel * water * capacity;
+			let sedimentCapacity = Math.max(-diff * vel * water * capacity, params.minSedimentCapacity);
 
 			if (diff > 0 || sediment > sedimentCapacity)
 			{
+				
 				let amount = diff > 0 ? Math.min(sediment, diff) : (sediment - sedimentCapacity) * deposition;
 
 				map.change(x, y, amount * (1-u) * (1-v));
@@ -81,39 +121,34 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSlope, capacity, ma
 				map.change(x, y+1, amount * (1-u) * v);
 				map.change(x+1, y+1, amount * u * v);
 
+				if (debug) callback(makeSphere(pos[0], map.get(pos[0], pos[1]), pos[1], 0x0000ff));
+
 				sediment -= amount;
 			}
 			else
 			{
+				
 				let amount = Math.min((sedimentCapacity - sediment) * erosion, -diff);
 
-				let total = 0;
+				if (debug)
+					console.log("Erode " + amount + ". Calculated by Math.min((" + sedimentCapacity + " - " + sediment + ") * " + erosion + ", " + -diff + ");");
 
-				for (let ry = Math.max(0, Math.ceil(y-radius)); ry < Math.min(map.size-1, Math.floor(y+radius)); ry++)
-					for (let rx = Math.max(0, Math.ceil(x-radius)); rx < Math.min(map.size-1, Math.floor(x+radius)); rx++)
-					{
-						let dist = Math.sqrt(Math.pow(pos[0] - rx, 2) + Math.pow(pos[1] - ry, 2));
-						if (dist <= radius)
-							total += radius - dist;
-					}
+				map.change(x, y, -amount * (1-u) * (1-v));
+				map.change(x+1, y, -amount * u * (1-v));
+				map.change(x, y+1, -amount * (1-u) * v);
+				map.change(x+1, y+1, -amount * u * v);
 
-				for (let ry = Math.max(0, Math.ceil(y-radius)); ry < Math.min(map.size-1, Math.floor(y+radius)); ry++)
-					for (let rx = Math.max(0, Math.ceil(x-radius)); rx < Math.min(map.size-1, Math.floor(x+radius)); rx++)
-					{
-						let dist = Math.sqrt(Math.pow(pos[0] - rx, 2) + Math.pow(pos[1] - ry, 2));
-						if (dist <= radius)
-							map.change(rx, ry, -amount * (radius - dist) / total);
-					}
+				if (debug) callback(makeSphere(pos[0], map.get(pos[0], pos[1]), pos[1], 0xff0000));
 
 				sediment += amount;
 			}
 
-			vel = Math.sqrt(Math.max(Math.pow(vel, 2) + diff * gravity, 0));
+			vel = Math.sqrt(Math.max(vel**2 + diff * gravity, 0));
 
 			if (vel == 0)
 				break;
 
-			water = water * (1-evaporation);
+			water *= (1-evaporation);
 			pos = newPos;
 		}
 	}
