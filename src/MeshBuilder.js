@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const height = 4;
+const height = 8;
 const meshSize = 33;
 
 const BuildMesh = (map) => {
@@ -21,7 +21,7 @@ const BuildMesh = (map) => {
 
     geometry.computeVertexNormals();
 
-	var material = new THREE.MeshPhongMaterial({ color: 'grey', shininess: '0' });
+	var material = new THREE.MeshPhongMaterial({ color: 'grey', shininess: '1' });
 	var mesh = new THREE.Mesh(geometry, material);
 
 	return mesh;

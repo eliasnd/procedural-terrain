@@ -60,9 +60,7 @@ class HeightMap
 		let right = this.get(nextX, nextY) - this.get(nextX, unitY);
 
 		let xGrad = lerp(top, bottom, yOffset);
-		//let xGrad = top * (1-yOffset) + bottom * yOffset;
 		let yGrad = lerp(left, right, xOffset);
-		//let yGrad = left * (1-xOffset) + right * xOffset;
 
 		return [xGrad, yGrad];
 	}
