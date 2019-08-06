@@ -76,7 +76,7 @@ const guiConfig =
 					'Gravity' : {
 						default: '-9.81'
 					},
-					'Min Slope' : {
+					'Min Capacity' : {
 						default: '0.01'
 					},
 					'Capacity' : {
@@ -95,6 +95,9 @@ const guiConfig =
 						default: '0.3'
 					},
 					'Erosion Radius' : {
+						default: '1'
+					},
+					'Smooth Factor' : {
 						default: '2'
 					}
 				}

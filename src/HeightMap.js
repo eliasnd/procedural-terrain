@@ -24,7 +24,9 @@ class HeightMap
 			let nextX = Math.min(this.size-1, unitX+1);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], xOffset, yOffset);
+			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], 
+						  this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], 
+						  xOffset, yOffset);
 		}
 	}
 
@@ -58,14 +60,9 @@ class HeightMap
 		let right = this.get(nextX, nextY) - this.get(nextX, unitY);
 
 		let xGrad = lerp(top, bottom, yOffset);
-		//let xGrad = top * (1-yOffset) + bottom * yOffset;
 		let yGrad = lerp(left, right, xOffset);
-		//let yGrad = left * (1-xOffset) + right * xOffset;
 
-		return {
-			x: xGrad,
-			y: yGrad
-		};
+		return [xGrad, yGrad];
 	}
 
 	clone()
