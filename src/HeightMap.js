@@ -35,6 +35,12 @@ class HeightMap
 		this.map[y * this.size + x] = val;
 	}
 
+	setAll(val)
+	{
+		for (let i = 0; i < this.size; i++)
+			this.map[i] = val;
+	}
+
 	change(x, y, val)
 	{
 		this.map[y * this.size + x] += val;

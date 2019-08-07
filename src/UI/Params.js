@@ -13,7 +13,8 @@ const labelStyle = {
 
 const inputStyle = {
 	textAlign: 'center',
-	display: 'inline-block'
+	display: 'inline-block',
+	width: '50%'
 }
 
 const Parameter = function(props)
@@ -26,7 +27,7 @@ const Parameter = function(props)
 	return (
 		<div style = {paramStyle}>
 			<span>{props.label}: </span>
-			<input type = {props.type} onChange = {handleChange} style = {inputStyle} defaultValue = {props.default}/>
+			<input onChange = {handleChange} style = {inputStyle} {...props.tags}/>
 		</div>
 	);
 }
@@ -59,7 +60,7 @@ class Params extends React.Component
 		let config = this.props.options[this.props.selected];
 		let params = Object.keys(config);
 
-		params = params.map(param => <Parameter key = {param} label = {param} type = {config[param].type} default = {config[param].default} callback = {this.getParam}/>);
+		params = params.map(param => <Parameter key = {param} label = {param} type = {config[param].type} tags = {config[param]} callback = {this.getParam}/>);
 
 		return (
 			<div>

@@ -10,23 +10,23 @@ const guiConfig =
 			{
 				'Perlin Noise' : {
 					'Size' : {
-						default: '257',
+						defaultValue: '257',
 						width: '25px'
 					}, 
 					'Scale' : {
-						default: '2',
+						defaultValue: '2',
 						width: '15px'
 					}, 
 					'Octaves' : {
-						default: '12',
+						defaultValue: '12',
 						width: '15px'
 					}, 
 					'Persistence' : {
-						default: '0.4',
+						defaultValue: '0.4',
 						width: '15px'
 					}, 
 					'Lacunarity' : {
-						default: '2',
+						defaultValue: '2',
 						width: '15px'
 					}
 				},
@@ -34,25 +34,25 @@ const guiConfig =
 					'Size' : {
 						type: 'text',
 						width: '25px',
-						default: '257',
+						defaultValue: '257',
 					}, 
 					'Spread' : {
-						default: '0.8',
+						defaultValue: '0.8',
 					}, 
 					'Spread Decay' : {
-						default: '0.5'
+						defaultValue: '0.5'
 					}
 				},
 				'Diamond Square' : {
 					'Size' : {
-						default: '257',
+						defaultValue: '257',
 						width: '25px'
 					}, 
 					'Spread' : {
-						default: '0.8'
+						defaultValue: '0.8'
 					}, 
 					'Spread Decay' : {
-						default: '0.5'
+						defaultValue: '0.5'
 					}
 				}
 			},
@@ -68,38 +68,66 @@ const guiConfig =
 			{
 				'Particle Erosion' : {
 					'Particles' : {
-						default: '10000',
-						type: 'number'
+						defaultValue: '10000',
+						type: 'number',
+						min: '1',
+						max: '50000'
 					},
 					'Inertia' : {
-						default: '0.1'
+						defaultValue: '0.1',
+						type: 'number',
+						min: '0',
+						max: '1'
 					},
 					'Gravity' : {
-						default: '-9.81'
+						defaultValue: '-9.81',
+						type: 'number',
+						min: '0',
+						max: '-100'
 					},
 					'Min Capacity' : {
-						default: '0.01'
+						defaultValue: '0.01',
+						type: 'number'
 					},
 					'Capacity' : {
-						default: '4'
+						defaultValue: '4',
+						type: 'number'
 					},
 					'Max Steps' : {
-						default: '64'
+						defaultValue: '64',
+						type: 'number',
+						min: '1',
+						max: '200'
 					},
 					'Evaporation' : {
-						default: '0.02'
+						defaultValue: '0.02',
+						type: 'number',
+						min: '0',
+						max: '1'
 					},
 					'Erosion' : {
-						default: '0.3'
+						defaultValue: '0.3',
+						type: 'number',
+						min: '0',
+						max: '2'
 					},
 					'Deposition' : {
-						default: '0.3'
+						defaultValue: '0.3',
+						type: 'number',
+						min: '0',
+						max: '2'
 					},
 					'Erosion Radius' : {
-						default: '1'
+						defaultValue: '2',
+						type: 'number',
+						min: '1',
+						max: '10'
 					},
 					'Smooth Factor' : {
-						default: '2'
+						defaultValue: '2',
+						type: 'number',
+						min: '1',
+						max: '10'
 					}
 				}
 			},

@@ -1,6 +1,4 @@
 import HeightMap from './../HeightMap';
-import Vector2 from './../Vectors';
-import * as THREE from 'three';
 
 var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
