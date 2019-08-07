@@ -12,8 +12,6 @@ const Erode = (map, data) =>
 			data['Max Steps'], data['Evaporation'], data['Erosion'], data['Deposition'], data['Erosion Radius'], data['Smooth Factor']
 		];
 
-		var worker = new Worker('./Eroders/ParticleErosion');
-
 		ParticleErosion(map, data['Particles'], data['Inertia'], data['Gravity'], data['Min Capacity'], data['Capacity'], 
 							 data['Max Steps'], data['Evaporation'], data['Erosion'], data['Deposition'], data['Erosion Radius'], data['Smooth Factor']);
 	}
