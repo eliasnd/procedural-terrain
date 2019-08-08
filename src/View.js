@@ -39,10 +39,12 @@ class View extends React.Component
 
 		scene.add(light);
 
+		//Make map
 		var map = this.props.map;
 		var mesh = BuildMesh(map);
 		scene.add(mesh);
 
+		//Make camera
 		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
@@ -103,9 +105,6 @@ class View extends React.Component
 		this.stopSpin();
 		this.scene.add(obj);
 		this.extras.push(obj);
-		//this.scene.remove(this.mesh);
-
-		//console.log(this.extras);
 	}
 	
 	clearExtras()
