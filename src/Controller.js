@@ -77,13 +77,10 @@ class Controller extends React.Component
 
 	updateProgress(progress)
 	{
-		console.log("Updating progress to " + progress);
 		this.setState({
 			progress: progress
 		});
-		this.progress = progress;
-		console.log("States progress is now " + this.state.progress);
-	}
+		this.progress = progress;	}
 
 	undo()
 	{
@@ -94,7 +91,6 @@ class Controller extends React.Component
 
 	render()
 	{
-		console.log("Rerendering");
 		var guiConfig = require('./UI/GuiConfig.js').config;
 
 		return (

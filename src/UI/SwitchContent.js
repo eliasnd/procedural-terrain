@@ -57,8 +57,6 @@ class SwitchContent extends React.Component
 		let data = this.state.params;
 		data['selected'] = this.state.selected;
 
-		console.log(data);
-
 		let fields = this.props.content.options[this.state.selected];
 
 		for (let i = 0; i < Object.keys(fields).length; i++)

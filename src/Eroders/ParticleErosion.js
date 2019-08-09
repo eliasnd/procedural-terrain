@@ -29,7 +29,6 @@ const params = {
 
 const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, capacity, maxSteps, evaporation, erosion, deposition, radius, smoothFactor, progressCallback) =>
 {
-	console.log("eroding");
 	radius = parseInt(radius);
 
 	let simulator = map.clone();
@@ -43,79 +42,77 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, c
 		let water = 1;
 		let sediment = 0;
 
-		setTimeout(() => {
-			for (let s = 0; s < maxSteps; s++)
+		for (let s = 0; s < maxSteps; s++)
+		{
+
+			let x = Math.floor(pos[0]);
+			let y = Math.floor(pos[1]);
+			let u = pos[0] % 1.0;
+			let v = pos[1] % 1.0;
+
+			let currHeight = simulator.get(pos[0], pos[1]);
+			let gradient = simulator.grad(pos[0], pos[1]);
+
+			dir = [dir[0] * inertia - gradient[0] * (1-inertia), dir[1] * inertia - gradient[1] * (1-inertia)];
+
+			if (dir[0] == 0 && dir[1] == 0)
+				dir = [Math.random(), Math.random()];
+
+			let dirLength = Math.sqrt(dir[0]**2 + dir[1]**2);
+
+			dir[0] /= dirLength;
+			dir[1] /= dirLength;
+
+			let newPos = [pos[0] + dir[0], pos[1] + dir[1]];
+
+			if (simulator.outOfBounds(newPos[0], newPos[1]))
+				break;
+
+			let diff = simulator.get(newPos[0], newPos[1]) - simulator.get(pos[0], pos[1]);
+
+			let sedimentCapacity = Math.max(-diff * vel * water * capacity, minSedimentCapacity);
+
+			if (diff > 0 || sediment > sedimentCapacity)
 			{
+				let amount = diff > 0 ? Math.min(sediment, diff) : (sediment - sedimentCapacity) * deposition;
 
-				let x = Math.floor(pos[0]);
-				let y = Math.floor(pos[1]);
-				let u = pos[0] % 1.0;
-				let v = pos[1] % 1.0;
+				simulator.change(x, y, amount * (1-u) * (1-v));
+				simulator.change(x+1, y, amount * u * (1-v));
+				simulator.change(x, y+1, amount * (1-u) * v);
+				simulator.change(x+1, y+1, amount * u * v);
 
-				let currHeight = simulator.get(pos[0], pos[1]);
-				let gradient = simulator.grad(pos[0], pos[1]);
+				changes.change(x, y, amount * (1-u) * (1-v));
+				changes.change(x+1, y, amount * u * (1-v));
+				changes.change(x, y+1, amount * (1-u) * v);
+				changes.change(x+1, y+1, amount * u * v);
 
-				dir = [dir[0] * inertia - gradient[0] * (1-inertia), dir[1] * inertia - gradient[1] * (1-inertia)];
-
-				if (dir[0] == 0 && dir[1] == 0)
-					dir = [Math.random(), Math.random()];
-
-				let dirLength = Math.sqrt(dir[0]**2 + dir[1]**2);
-
-				dir[0] /= dirLength;
-				dir[1] /= dirLength;
-
-				let newPos = [pos[0] + dir[0], pos[1] + dir[1]];
-
-				if (simulator.outOfBounds(newPos[0], newPos[1]))
-					break;
-
-				let diff = simulator.get(newPos[0], newPos[1]) - simulator.get(pos[0], pos[1]);
-
-				let sedimentCapacity = Math.max(-diff * vel * water * capacity, minSedimentCapacity);
-
-				if (diff > 0 || sediment > sedimentCapacity)
-				{
-					let amount = diff > 0 ? Math.min(sediment, diff) : (sediment - sedimentCapacity) * deposition;
-
-					simulator.change(x, y, amount * (1-u) * (1-v));
-					simulator.change(x+1, y, amount * u * (1-v));
-					simulator.change(x, y+1, amount * (1-u) * v);
-					simulator.change(x+1, y+1, amount * u * v);
-
-					changes.change(x, y, amount * (1-u) * (1-v));
-					changes.change(x+1, y, amount * u * (1-v));
-					changes.change(x, y+1, amount * (1-u) * v);
-					changes.change(x+1, y+1, amount * u * v);
-
-					sediment -= amount;
-				}
-				else
-				{
-					let amount = Math.min((sedimentCapacity - sediment) * erosion, -diff);
-
-					simulator.change(x, y, -amount * (1-u) * (1-v));
-					simulator.change(x+1, y, -amount * u * (1-v));
-					simulator.change(x, y+1, -amount * (1-u) * v);
-					simulator.change(x+1, y+1, -amount * u * v);
-
-					changes.change(x, y, -amount * (1-u) * (1-v));
-					changes.change(x+1, y, -amount * u * (1-v));
-					changes.change(x, y+1, -amount * (1-u) * v);
-					changes.change(x+1, y+1, -amount * u * v);
-
-					sediment += amount;
-				}
-
-				vel = Math.sqrt(Math.max(vel**2 + diff * gravity, 0));
-
-				if (vel == 0)
-					break;
-
-				water *= (1-evaporation);
-				pos = newPos;
+				sediment -= amount;
 			}
-		}, 1000);
+			else
+			{
+				let amount = Math.min((sedimentCapacity - sediment) * erosion, -diff);
+
+				simulator.change(x, y, -amount * (1-u) * (1-v));
+				simulator.change(x+1, y, -amount * u * (1-v));
+				simulator.change(x, y+1, -amount * (1-u) * v);
+				simulator.change(x+1, y+1, -amount * u * v);
+
+				changes.change(x, y, -amount * (1-u) * (1-v));
+				changes.change(x+1, y, -amount * u * (1-v));
+				changes.change(x, y+1, -amount * (1-u) * v);
+				changes.change(x+1, y+1, -amount * u * v);
+
+				sediment += amount;
+			}
+
+			vel = Math.sqrt(Math.max(vel**2 + diff * gravity, 0));
+
+			if (vel == 0)
+				break;
+
+			water *= (1-evaporation);
+			pos = newPos;
+		}
 
 		if (progressCallback)
 			progressCallback(d / erosions);
@@ -128,8 +125,6 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, c
 	for (let y = 0; y < map.size; y++)
 		for (let x = 0; x < map.size; x++)
 			map.change(x, y, changes.get(x, y));
-
-	console.log("Done eroding");
 }
 
 export default ParticleErosion;
