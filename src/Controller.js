@@ -80,7 +80,8 @@ class Controller extends React.Component
 		this.setState({
 			progress: progress
 		});
-		this.progress = progress;	}
+		this.progress = progress;	
+	}
 
 	undo()
 	{

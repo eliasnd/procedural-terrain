@@ -3,16 +3,14 @@ import * as THREE from "three";
 const height = 8;
 const meshSize = 33;
 
-var client = new XMLHttpRequest();
-client.open('GET', './Shaders/slopeColorVertex.glsl');
-client.open('GET', './Shaders/slopeColorFragment.glsl');
-
-const BuildMesh = (map) => {
-	console.log("Rebuilding mesh");
+const BuildMesh = (map, vShader, fShader) => 
+{
+	//Initialize buffergeometry
 	var geometry = new THREE.BufferGeometry();
 
-	var sizeFactor = meshSize / map.size;
+	var sizeFactor = meshSize / map.size; //Keep meshes of any resolution same size in scene
 
+	//Set vertices
 	var vertices = new Float32Array(map.size**2 * 3);
 
 	for (let y = 0; y < map.size; y++)
@@ -22,11 +20,11 @@ const BuildMesh = (map) => {
 			vertices[index] = (x - map.size/2) * sizeFactor;
 			vertices[index+1] = map.get(x, y) * height - height/2;
 			vertices[index+2] = (y - map.size/2) * sizeFactor;
-			//vertices.push((x - map.size/2) * sizeFactor, map.get(x, y) * height - height/2, (y - map.size/2) * sizeFactor);
 		}
 
 	geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
 
+	//Set faces
 	var faces = [];
 
 	for (let y = 0; y < map.size-1; y++)
@@ -40,26 +38,30 @@ const BuildMesh = (map) => {
 
     geometry.computeVertexNormals();
 
-    var gradients = new Float32Array((map.size-1)**2);
+    //var gradients = new Float32Array(map.size**2 * 2);	//Calculate gradients for vertex shader
+    var gradients = new Float32Array(map.size**2);
 
-    for (let y = 0; y < map.size-1; y++)
-    	for (let x = 0; x < map.size-1; x++)
+    for (let y = 0; y < map.size; y++)
+    	for (let x = 0; x < map.size; x++)
     	{
-    		let grad = map.grad(x, y);
-    		gradients[y * (map.size-1) + x] = Math.sqrt(grad[0]**2 + grad[1]**2);
+    		let maxGrad = Math.max(Math.abs(map.get(x, y) - map.get(x+1, y)), Math.abs(map.get(x, y) - map.get(x-1, y)), Math.abs(map.get(x, y) - map.get(x, y+1)), Math.abs(map.get(x, y) - map.get(x, y-1)));
+    		gradients[y * map.size + x] = maxGrad;
     	}
+
+    //console.log(gradients);
 
     geometry.addAttribute('gradient', new THREE.BufferAttribute(gradients, 1));
 
-    //var shadedMaterial = new THREE.ShaderMaterial({ })
+    //Make shaders
+    var shaderMaterial = new THREE.ShaderMaterial({
+    	//uniforms: uniforms,
+    	vertexShader: vShader,
+    	fragmentShader: fShader,
+    	//lights: true
+    });
 
-	var material = new THREE.MeshStandardMaterial({ color: 'grey', roughness: '1', metalness: '0' });
-
-	var shaderMat = new THREE.ShaderMaterial()
-
-	var mesh = new THREE.Mesh(geometry, material);
-
-	return mesh;
+	var mesh = new THREE.Mesh(geometry, shaderMaterial);
+	return mesh;    
 }
 
 export default BuildMesh;
