@@ -38,13 +38,21 @@ const BuildMesh = (map, vShader, fShader) =>
 
     geometry.computeVertexNormals();
 
-    //var gradients = new Float32Array(map.size**2 * 2);	//Calculate gradients for vertex shader
+	//Calculate gradients for vertex shader
     var gradients = new Float32Array(map.size**2);
+
+    var slopeRange = 2;
+
+    const getMaxGrad = (x, y) => { return Math.max(Math.abs(map.get(x, y) - map.get(x-1, y)), Math.abs(map.get(x, y) - map.get(x+1, y)), Math.abs(map.get(x, y) - map.get(x, y-1)), Math.abs(map.get(x, y) - map.get(x, y+1))); };
 
     for (let y = 0; y < map.size; y++)
     	for (let x = 0; x < map.size; x++)
     	{
-    		let maxGrad = Math.max(Math.abs(map.get(x, y) - map.get(x+1, y)), Math.abs(map.get(x, y) - map.get(x-1, y)), Math.abs(map.get(x, y) - map.get(x, y+1)), Math.abs(map.get(x, y) - map.get(x, y-1)));
+    		let maxGrad = 0;
+    		for (let i = -slopeRange; i < slopeRange; i++)
+    			for (let j = -slopeRange; j < slopeRange; j++)
+    				maxGrad = Math.max(maxGrad, Math.abs(map.get(x, y) - map.get(x+j, y+i)));
+    		
     		gradients[y * map.size + x] = maxGrad;
     	}
 
@@ -52,12 +60,19 @@ const BuildMesh = (map, vShader, fShader) =>
 
     geometry.addAttribute('gradient', new THREE.BufferAttribute(gradients, 1));
 
+    let slopeThreshold = 0.8995 / map.size;
+
     //Make shaders
     var shaderMaterial = new THREE.ShaderMaterial({
-    	//uniforms: uniforms,
+    	uniforms: {
+    		'flatColor' : { value: [0.5, 0.7, 0.3, 1.0] },
+    		'steepColor' : { value: [0.6, 0.4, 0.2, 1.0] },
+    		'heightThreshold' : { value: 0.2 },
+    		'slopeThreshold' : { value: slopeThreshold },
+    		'smoothFactor' : { value: 0.005 }
+    	},
     	vertexShader: vShader,
     	fragmentShader: fShader,
-    	//lights: true
     });
 
 	var mesh = new THREE.Mesh(geometry, shaderMaterial);
