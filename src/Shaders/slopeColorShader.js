@@ -20,7 +20,8 @@ const slopeColorShader = {
 
 	fShader: [
 
-		'uniform vec4 flatColor;',
+		'uniform vec4 lowColor;',
+		'uniform vec4 highColor;',
 		'uniform vec4 steepColor;',
 		'uniform float heightThreshold;',
 		'uniform float slopeThreshold;',
@@ -35,7 +36,9 @@ const slopeColorShader = {
 			'light = normalize(light);',
 			'float dProd = max(0.0, dot(light, vNormal));',
 
-			'vec4 color = (height < heightThreshold) ? flatColor + (steepColor-flatColor) * clamp((grad-slopeThreshold)/smoothFactor, 0.0, 1.0) : flatColor + (steepColor-flatColor) * clamp((grad-slopeThreshold)/smoothFactor, 0.0, 1.0);',
+			'vec4 flatColor = lowColor + (highColor-lowColor) * clamp((height-heightThreshold)/smoothFactor, 0.0, 1.0);',
+
+			'vec4 color = flatColor + (steepColor-flatColor) * clamp((grad-slopeThreshold)/smoothFactor, 0.0, 1.0);',
 
 			'gl_FragColor = color * vec4(dProd, dProd, dProd, 1.0);',
 		'}'

@@ -41,9 +41,7 @@ const BuildMesh = (map, vShader, fShader) =>
 	//Calculate gradients for vertex shader
     var gradients = new Float32Array(map.size**2);
 
-    var slopeRange = 2;
-
-    const getMaxGrad = (x, y) => { return Math.max(Math.abs(map.get(x, y) - map.get(x-1, y)), Math.abs(map.get(x, y) - map.get(x+1, y)), Math.abs(map.get(x, y) - map.get(x, y-1)), Math.abs(map.get(x, y) - map.get(x, y+1))); };
+    var slopeRange = 1.5;
 
     for (let y = 0; y < map.size; y++)
     	for (let x = 0; x < map.size; x++)
@@ -65,7 +63,8 @@ const BuildMesh = (map, vShader, fShader) =>
     //Make shaders
     var shaderMaterial = new THREE.ShaderMaterial({
     	uniforms: {
-    		'flatColor' : { value: [0.5, 0.7, 0.3, 1.0] },
+    		'lowColor' : { value: [0.5, 0.7, 0.3, 1.0] },
+            'highColor' : { value: [0.95, 0.95, 0.95, 1.0] },
     		'steepColor' : { value: [0.6, 0.4, 0.2, 1.0] },
     		'heightThreshold' : { value: 0.2 },
     		'slopeThreshold' : { value: slopeThreshold },

@@ -25,6 +25,7 @@ class View extends React.Component
 		this.renderScene = this.renderScene.bind(this);
 		this.clearExtras = this.clearExtras.bind(this);
 		this.setMesh = this.setMesh.bind(this);
+		this.handleResize = this.handleResize.bind(this);
 	}
 
 	componentDidMount()
@@ -65,6 +66,8 @@ class View extends React.Component
 		this.view.appendChild(renderer.domElement);
 		this.renderScene();
 		this.spin();
+
+		window.addEventListener('resize', this.handleResize, false);
 	}
 
 	startSpin()
@@ -115,6 +118,16 @@ class View extends React.Component
 	{
 		this.extras.map((extra) => {this.scene.remove(extra)});
 		this.extras = [];
+	}
+
+	handleResize(event)
+	{
+		let width = window.innerWidth;
+		let height = window.innerHeight;
+
+		this.camera.aspect = width / height;
+		this.camera.updateProjectionMatrix();
+		this.renderer.setSize(width, height);
 	}
 
 	render()
