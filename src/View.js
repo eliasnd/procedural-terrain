@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ParticleErosion from './Eroders/ParticleErosion';
+import slopeColorShader from './Shaders/slopeColorShader';
 import BuildMesh from './MeshBuilder';
 import SidebarGui from './UI/SidebarGui';
 import Panel from './UI/Panel';
@@ -23,6 +24,8 @@ class View extends React.Component
 		this.spin = this.spin.bind(this);
 		this.renderScene = this.renderScene.bind(this);
 		this.clearExtras = this.clearExtras.bind(this);
+		this.setMesh = this.setMesh.bind(this);
+		this.handleResize = this.handleResize.bind(this);
 	}
 
 	componentDidMount()
@@ -39,10 +42,7 @@ class View extends React.Component
 
 		scene.add(light);
 
-		var map = this.props.map;
-		var mesh = BuildMesh(map);
-		scene.add(mesh);
-
+		//Make camera
 		var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 		camera.position.set(-25, 20, -25);
 		camera.lookAt(0, 0, 0);
@@ -50,14 +50,24 @@ class View extends React.Component
 		var controls = new OrbitControls(camera, renderer.domElement);
 		controls.update();
 
+		//Make map
+		var map = this.props.map;
+
+		var mesh = BuildMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
+
+		scene.add(mesh);
+
 		this.scene = scene;
 		this.renderer = renderer;
 		this.camera = camera;
-		this.mesh = mesh;
 		this.extras = [];
+		this.mesh = mesh;
 
 		this.view.appendChild(renderer.domElement);
+		this.renderScene();
 		this.spin();
+
+		window.addEventListener('resize', this.handleResize, false);
 	}
 
 	startSpin()
@@ -87,11 +97,10 @@ class View extends React.Component
 
 	setMesh(map)
 	{
-		this.stopSpin();
+		if (this.mesh)
+			this.scene.remove(this.mesh);
 
-		this.scene.remove(this.mesh);
-
-		var newMesh = BuildMesh(map);
+		var newMesh = BuildMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
 		this.scene.add(newMesh);
 
 		this.mesh = newMesh;
@@ -103,15 +112,22 @@ class View extends React.Component
 		this.stopSpin();
 		this.scene.add(obj);
 		this.extras.push(obj);
-		//this.scene.remove(this.mesh);
-
-		//console.log(this.extras);
 	}
 	
 	clearExtras()
 	{
 		this.extras.map((extra) => {this.scene.remove(extra)});
 		this.extras = [];
+	}
+
+	handleResize(event)
+	{
+		let width = window.innerWidth;
+		let height = window.innerHeight;
+
+		this.camera.aspect = width / height;
+		this.camera.updateProjectionMatrix();
+		this.renderer.setSize(width, height);
 	}
 
 	render()

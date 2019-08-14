@@ -27,7 +27,7 @@ const params = {
 	minSedimentCapacity: .01
 }
 
-const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, capacity, maxSteps, evaporation, erosion, deposition, radius, smoothFactor) =>
+const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, capacity, maxSteps, evaporation, erosion, deposition, radius, smoothFactor, progressCallback) =>
 {
 	radius = parseInt(radius);
 
@@ -44,6 +44,7 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, c
 
 		for (let s = 0; s < maxSteps; s++)
 		{
+
 			let x = Math.floor(pos[0]);
 			let y = Math.floor(pos[1]);
 			let u = pos[0] % 1.0;
@@ -112,6 +113,9 @@ const ParticleErosion = (map, erosions, inertia, gravity, minSedimentCapacity, c
 			water *= (1-evaporation);
 			pos = newPos;
 		}
+
+		if (progressCallback)
+			progressCallback(d / erosions);
 	}
 
 	for (let y = 0; y < map.size; y++)
