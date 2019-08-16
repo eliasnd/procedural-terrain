@@ -61,21 +61,29 @@ const BuildMesh = (map, vShader, fShader) =>
     let slopeThreshold = 0.8995 / map.size;
 
     //Make shaders
-    var shaderMaterial = new THREE.ShaderMaterial({
-    	uniforms: {
-    		'lowColor' : { value: [0.5, 0.7, 0.3, 1.0] },
-            'highColor' : { value: [0.95, 0.95, 0.95, 1.0] },
-    		'steepColor' : { value: [0.6, 0.4, 0.2, 1.0] },
-    		'heightThreshold' : { value: 0.2 },
-    		'slopeThreshold' : { value: slopeThreshold },
-    		'smoothFactor' : { value: 0.005 }
-    	},
-    	vertexShader: vShader,
-    	fragmentShader: fShader,
-    });
+    if (vShader)
+        var shaderMaterial = new THREE.ShaderMaterial({
+        	uniforms: {
+        		'lowColor' : { value: [0.5, 0.7, 0.3, 1.0] },
+                'highColor' : { value: [0.95, 0.95, 0.95, 1.0] },
+        		'steepColor' : { value: [0.6, 0.4, 0.2, 1.0] },
+        		'heightThreshold' : { value: 0.2 },
+        		'slopeThreshold' : { value: slopeThreshold },
+        		'smoothFactor' : { value: 0.005 }
+        	},
+        	vertexShader: vShader,
+        	fragmentShader: fShader,
+        });
+    else
+        shaderMaterial = new THREE.MeshStandardMaterial();
 
 	var mesh = new THREE.Mesh(geometry, shaderMaterial);
 	return mesh;    
+}
+
+const ApplyShader = (vShader, fShader) =>
+{
+
 }
 
 export default BuildMesh;

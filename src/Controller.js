@@ -25,7 +25,7 @@ class Controller extends React.Component
 	{
 		super(props);
 
-		let map = Erode(Generate(), this.addExtra);
+		let map = Generate();
 
 		this.state = {
 			lastMap: map,
@@ -40,7 +40,16 @@ class Controller extends React.Component
 		this.undo = this.undo.bind(this);
 		this.addExtra = this.addExtra.bind(this);
 		this.updateProgress = this.updateProgress.bind(this);
+		this.setMesh = this.setMesh.bind(this);
 		this.progress = 0;
+	}
+
+	setMesh(map)
+	{
+		this.setState({
+			lastMap: this.state.map.clone(),
+			map: map
+		});
 	}
 
 	addExtra(extra)

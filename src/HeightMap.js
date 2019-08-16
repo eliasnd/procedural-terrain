@@ -35,9 +35,16 @@ class HeightMap
 		this.map[y * this.size + x] = val;
 	}
 
+	setRange(x1, y1, x2, y2, val)
+	{
+		for (let y = y1; y < y2; y++)
+			for (let x = x1; x < x2; x++)
+				this.map[y * this.size + x] = val;
+	}
+
 	setAll(val)
 	{
-		for (let i = 0; i < this.size; i++)
+		for (let i = 0; i < this.size**2; i++)
 			this.map[i] = val;
 	}
 

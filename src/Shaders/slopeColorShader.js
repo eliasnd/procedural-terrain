@@ -36,7 +36,8 @@ const slopeColorShader = {
 			'light = normalize(light);',
 			'float dProd = max(0.0, dot(light, vNormal));',
 
-			'vec4 flatColor = lowColor + (highColor-lowColor) * clamp((height-heightThreshold)/smoothFactor, 0.0, 1.0);',
+			//'vec4 flatColor = lowColor + (highColor-lowColor) * clamp((height-heightThreshold)/smoothFactor, 0.0, 1.0);',
+			'vec4 flatColor = lowColor;',
 
 			'vec4 color = flatColor + (steepColor-flatColor) * clamp((grad-slopeThreshold)/smoothFactor, 0.0, 1.0);',
 

@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ParticleErosion from './Eroders/ParticleErosion';
 import slopeColorShader from './Shaders/slopeColorShader';
 import BuildMesh from './MeshBuilder';
-import SidebarGui from './UI/SidebarGui';
-import Panel from './UI/Panel';
+import HeightMap from './HeightMap';
+import simulate from './Eroders/Water/PipeSimulation.js'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -55,7 +54,16 @@ class View extends React.Component
 
 		var mesh = BuildMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
 
+		var waterMap = new HeightMap(map.size);
+		waterMap.setAll(0.1);
+		waterMap.setRange(0, 0, 15, 15, 1);
+
+		simulate(waterMap);
+
+		var waterMesh = BuildMesh(waterMap);
+
 		scene.add(mesh);
+		scene.add(waterMesh);
 
 		this.scene = scene;
 		this.renderer = renderer;
