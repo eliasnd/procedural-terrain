@@ -22,7 +22,7 @@ const BuildTerrainMesh = (map, vShader, fShader) =>
 			vertices[index+2] = (y - map.size/2) * sizeFactor;
 		}
 
-	geometry.addAttribute('position', new THREE.BufferAttribute(vertices, 3));
+	geometry.addAttribute('position', new THREE.BufferAttribute(map.map, 3));
 
 	//Set faces
 	var faces = [];

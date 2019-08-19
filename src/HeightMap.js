@@ -1,20 +1,36 @@
 var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
 
+const height = 8;
+const meshSize = 33;
+
 class HeightMap 
 {
 	constructor(size)
 	{
-		this.map = [];
+		this.map = new Float32Array(size**2 * 3);
 		this.size = size;
-		for (let i = 0; i < size ** 2; i++)
-			this.map[i] = 0;
+		this.sizeFactor = meshSize / size;
+
+		for (let y = 0; y < size; y++)
+			for (let x = 0; x < size; x++)
+			{
+				let index = (y * size + x) * 3;
+				this.map[index] = (x - size/2) * this.sizeFactor;
+				this.map[index+1] = -height/2;
+				this.map[index+2] = (y - size/2) * this.sizeFactor;
+			}
+	}
+
+	unscale(num)
+	{
+		return (num + height/2) / height;
 	}
 
 	get(x, y)
 	{
 		if (Number.isInteger(x) && Number.isInteger(y))
-			return this.map[y * this.size + x];
+			return this.unscale(this.map[(y * this.size + x) * 3 + 1]);
 		else
 		{
 			let unitX = Math.floor(x);
@@ -24,33 +40,33 @@ class HeightMap
 			let nextX = Math.min(this.size-1, unitX+1);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], 
-						  this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], 
+			return bilerp(this.unscale(this.map[(unitY * this.size + unitX) * 3 + 1]), this.unscale(this.map[(unitY * this.size + nextX) * 3 + 1]), 
+						  this.unscale(this.map[(nextY * this.size + unitX) * 3 + 1]), this.unscale(this.map[(nextY * this.size + nextX) * 3 + 1]), 
 						  xOffset, yOffset);
 		}
 	}
 
 	set(x, y, val)
 	{
-		this.map[y * this.size + x] = val;
+		this.map[(y * this.size + x) * 3 + 1] = val * height - height/2;
 	}
 
 	setRange(x1, y1, x2, y2, val)
 	{
 		for (let y = y1; y < y2; y++)
 			for (let x = x1; x < x2; x++)
-				this.map[y * this.size + x] = val;
+				this.map[(y * this.size + x) * 3 + 1] = val * height - height/2;
 	}
 
 	setAll(val)
 	{
-		for (let i = 0; i < this.size**2; i++)
-			this.map[i] = val;
+		for (let i = 1; i < this.map.length; i+=3)
+			this.map[i] = val * height - height/2;
 	}
 
 	change(x, y, val)
 	{
-		this.map[y * this.size + x] += val;
+		this.map[(y * this.size + x) * 3 + 1] += val;
 	}
 
 	outOfBounds(x, y)

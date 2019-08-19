@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import slopeColorShader from './Shaders/slopeColorShader';
 import BuildTerrainMesh from './TerrainMeshBuilder';
-import BuildWaterMesh from './WaterMeshBuilder';
 import HeightMap from './HeightMap';
 import simulate from './Eroders/Water/PipeSimulation.js'
 import * as THREE from 'three';
@@ -61,7 +60,8 @@ class View extends React.Component
 
 		simulate(waterMap);
 
-		var waterMesh = BuildWaterMesh(waterMap);
+		var waterMesh = BuildTerrainMesh(waterMap);
+
 
 		scene.add(mesh);
 		scene.add(waterMesh);

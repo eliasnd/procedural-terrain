@@ -1,4 +1,4 @@
-import HeightMap from './../../HeightMap';
+import MeshMap from './../../HeightMap';
 
 //Physical params
 const gravity = 9.81;			//m/s^2
@@ -101,7 +101,10 @@ const simulate = (waterMap, landMap) =>
 					waterMap.setRange(x * columnSize, y * columnSize, (x+1) * columnSize, (y+1) * columnSize, columnHeight(column));
 
 					if (columnHeight(column) !== oldHeight && debug)
+					{
 						console.log('Changed height at ' + x + ', ' + y + ' from ' + oldHeight + ' to ' + columnHeight(column));
+						console.log('map now has val ' + waterMap.get(x, y));
+					}
 				}
 		}, 
 		timeStep);
