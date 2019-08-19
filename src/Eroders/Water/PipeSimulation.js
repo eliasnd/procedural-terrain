@@ -12,7 +12,7 @@ const cellCount = 3;
 
 //Time params
 const timeStep = 5;				//5 ms
-const timeOut = 5;			//50 seconds
+const timeOut = 50;			//50 seconds
 
 const debug = false;
 
@@ -30,14 +30,6 @@ const simulate = (waterMap, landMap) =>
 			col[c].top = col[c].bottom + col[c].volume / columnSize**2;
 		}
 	};
-
-	//if (debug)
-	//{
-		console.log('Column 0, 0:');
-		console.log('		0: Top ' + columns[0][0].top + ', Bottom ' + columns[0][0].bottom + ', Volume ' + columns[0][0].volume);
-		console.log('		1: Top ' + columns[0][1].top + ', Bottom ' + columns[0][1].bottom + ', Volume ' + columns[0][1].volume);
-		console.log('		2: Top ' + columns[0][2].top + ', Bottom ' + columns[0][2].bottom + ', Volume ' + columns[0][2].volume);
-	//}
 
 	for (let t = 0; t < timeOut; t += timeStep)
 	{
@@ -91,49 +83,26 @@ const simulate = (waterMap, landMap) =>
 
 					if (debug)
 					{
-						console.log('New Heights: ');
-						console.log('		Head: ' + columnHeight(headCol));
-						console.log('		Tail: ' + columnHeight(tailCol));
+						console.log('New Volumes: ');
+						console.log('		Head: ' + headCell.volume);
+						console.log('		Tail: ' + tailCell.volume);
 					}
 				}
-				/*else if (p < 30)
-				{
-					console.log('Pipe: ')
-					console.log('		Head: ' + pipe.head[0] + ', ' + pipe.head[1] + ', ' + pipe.head[2]);
-					console.log('			Top: ' + headCell.top);
-					console.log('			Bottom: ' + headCell.bottom);
-					console.log('			Volume: ' + headCell.volume);
-					console.log('		Tail: ' + pipe.tail[0] + ', ' + pipe.tail[1] + ', ' + pipe.tail[2]);
-					console.log('			Top: ' + tailCell.top);
-					console.log('			Bottom: ' + tailCell.bottom);
-					console.log('			Volume: ' + tailCell.volume);
-					console.log('		Cross section: ' + crossSection);
-				}*/
 			}
-
-			//if (debug)
-			//{
-				console.log('Column 0, 0:');
-				console.log('		0: Top ' + columns[0][0].top + ', Bottom ' + columns[0][0].bottom + ', Volume ' + columns[0][0].volume);
-				console.log('		1: Top ' + columns[0][1].top + ', Bottom ' + columns[0][1].bottom + ', Volume ' + columns[0][1].volume);
-				console.log('		2: Top ' + columns[0][2].top + ', Bottom ' + columns[0][2].bottom + ', Volume ' + columns[0][2].volume);
-			//}
 
 			for (let y = 0; y < resolution; y++)
 				for (let x = 0; x < resolution; x++)
 				{
 					let column = columns[y * resolution + x];
+
+					let oldHeight = columnHeight(column);
+
 					setBounds(column);
 					waterMap.setRange(x * columnSize, y * columnSize, (x+1) * columnSize, (y+1) * columnSize, columnHeight(column));
-				}
 
-			//if (debug)
-			//{
-				console.log('Column 0, 0:');
-				console.log('		0: Top ' + columns[0][0].top + ', Bottom ' + columns[0][0].bottom + ', Volume ' + columns[0][0].volume);
-				console.log('		1: Top ' + columns[0][1].top + ', Bottom ' + columns[0][1].bottom + ', Volume ' + columns[0][1].volume);
-				console.log('		2: Top ' + columns[0][2].top + ', Bottom ' + columns[0][2].bottom + ', Volume ' + columns[0][2].volume);
-			//}
+					if (columnHeight(column) !== oldHeight && debug)
+						console.log('Changed height at ' + x + ', ' + y + ' from ' + oldHeight + ' to ' + columnHeight(column));
+				}
 		}, 
 		timeStep);
 	}

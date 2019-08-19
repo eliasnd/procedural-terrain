@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import slopeColorShader from './Shaders/slopeColorShader';
-import BuildMesh from './MeshBuilder';
+import BuildTerrainMesh from './TerrainMeshBuilder';
+import BuildWaterMesh from './WaterMeshBuilder';
 import HeightMap from './HeightMap';
 import simulate from './Eroders/Water/PipeSimulation.js'
 import * as THREE from 'three';
@@ -52,7 +53,7 @@ class View extends React.Component
 		//Make map
 		var map = this.props.map;
 
-		var mesh = BuildMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
+		var mesh = BuildTerrainMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
 
 		var waterMap = new HeightMap(map.size);
 		waterMap.setAll(0.1);
@@ -60,7 +61,7 @@ class View extends React.Component
 
 		simulate(waterMap);
 
-		var waterMesh = BuildMesh(waterMap);
+		var waterMesh = BuildWaterMesh(waterMap);
 
 		scene.add(mesh);
 		scene.add(waterMesh);
@@ -108,7 +109,7 @@ class View extends React.Component
 		if (this.mesh)
 			this.scene.remove(this.mesh);
 
-		var newMesh = BuildMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
+		var newMesh = BuildTerrainMesh(map, slopeColorShader.vShader, slopeColorShader.fShader);
 		this.scene.add(newMesh);
 
 		this.mesh = newMesh;
