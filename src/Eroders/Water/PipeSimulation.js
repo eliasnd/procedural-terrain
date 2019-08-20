@@ -11,8 +11,8 @@ const resolution = 16;
 const cellCount = 3;
 
 //Time params
-const timeStep = 5;				//5 ms
-const timeOut = 50;			//50 seconds
+const timeStep = 50;				//5 ms
+const timeOut = 10000;			//50 seconds
 
 const debug = false;
 

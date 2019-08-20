@@ -3,7 +3,7 @@ import Generate from './Generator';
 import Erode from './Eroder';
 import SidebarGui from './UI/SidebarGui';
 import ProgressBar from './UI/ProgressBar';
-import View from './View';
+import View from './Viewer/View';
 
 const undoStyle = {
 	right: '0%',

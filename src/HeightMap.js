@@ -8,29 +8,14 @@ class HeightMap
 {
 	constructor(size)
 	{
-		this.map = new Float32Array(size**2 * 3);
+		this.map = new Float32Array(size**2);
 		this.size = size;
-		this.sizeFactor = meshSize / size;
-
-		for (let y = 0; y < size; y++)
-			for (let x = 0; x < size; x++)
-			{
-				let index = (y * size + x) * 3;
-				this.map[index] = (x - size/2) * this.sizeFactor;
-				this.map[index+1] = -height/2;
-				this.map[index+2] = (y - size/2) * this.sizeFactor;
-			}
-	}
-
-	unscale(num)
-	{
-		return (num + height/2) / height;
 	}
 
 	get(x, y)
 	{
 		if (Number.isInteger(x) && Number.isInteger(y))
-			return this.unscale(this.map[(y * this.size + x) * 3 + 1]);
+			return this.map[y * this.size + x];
 		else
 		{
 			let unitX = Math.floor(x);
@@ -40,33 +25,33 @@ class HeightMap
 			let nextX = Math.min(this.size-1, unitX+1);
 			let nextY = Math.min(this.size-1, unitY+1);
 
-			return bilerp(this.unscale(this.map[(unitY * this.size + unitX) * 3 + 1]), this.unscale(this.map[(unitY * this.size + nextX) * 3 + 1]), 
-						  this.unscale(this.map[(nextY * this.size + unitX) * 3 + 1]), this.unscale(this.map[(nextY * this.size + nextX) * 3 + 1]), 
+			return bilerp(this.map[unitY * this.size + unitX], this.map[unitY * this.size + nextX], 
+						  this.map[nextY * this.size + unitX], this.map[nextY * this.size + nextX], 
 						  xOffset, yOffset);
 		}
 	}
 
 	set(x, y, val)
 	{
-		this.map[(y * this.size + x) * 3 + 1] = val * height - height/2;
+		this.map[y * this.size + x] = val;
 	}
 
 	setRange(x1, y1, x2, y2, val)
 	{
 		for (let y = y1; y < y2; y++)
 			for (let x = x1; x < x2; x++)
-				this.map[(y * this.size + x) * 3 + 1] = val * height - height/2;
+				this.map[y * this.size + x] = val;
 	}
 
 	setAll(val)
 	{
-		for (let i = 1; i < this.map.length; i+=3)
-			this.map[i] = val * height - height/2;
+		for (let i = 0; i < this.map.length; i++)
+			this.map[i] = val;
 	}
 
 	change(x, y, val)
 	{
-		this.map[(y * this.size + x) * 3 + 1] += val;
+		this.map[y * this.size + x] += val;
 	}
 
 	outOfBounds(x, y)
