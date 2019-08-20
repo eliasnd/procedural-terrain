@@ -8,6 +8,28 @@ const guiConfig =
 			label: 'Generator: ',
 			options:
 			{
+				'Exponentially Distributed Noise' : {
+					'Size' : {
+						defaultValue: '257',
+						width: '25px'
+					}, 
+					'Scale' : {
+						defaultValue: '2',
+						width: '15px'
+					}, 
+					'Octaves' : {
+						defaultValue: '12',
+						width: '15px'
+					}, 
+					'Persistence' : {
+						defaultValue: '0.4',
+						width: '15px'
+					}, 
+					'Lacunarity' : {
+						defaultValue: '2',
+						width: '15px'
+					}
+				},
 				'Perlin Noise' : {
 					'Size' : {
 						defaultValue: '257',
