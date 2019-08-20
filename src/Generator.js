@@ -6,7 +6,7 @@ import ExponentiallyDistributedNoise from './Generators/ExponentiallyDistributed
 const Generate = (data) =>
 {
 	if (!data)
-		return ExponentiallyDistributedNoise(257, 2, 12, 0.4, 2);
+		return ExponentiallyDistributedNoise(5, 2, 1, 0.4, 2);
 
 	if (data.selected === 'Midpoint Displacement')
 		return MidpointDisplacement(data['Size'], data['Spread'], data['Spread Decay']);

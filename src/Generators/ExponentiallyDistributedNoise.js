@@ -68,10 +68,7 @@ const init = () =>
 	let mu = 1;
 
 	for (let i = 0; i < 256; i++)
-	{
-		m.push(mu);
-		mu /= dec;
-	}
+		m.push(mu /= dec);
 
 	console.log(m);
 }
@@ -92,28 +89,18 @@ const noise = (x, y) =>
 	var xOffset = x - Math.floor(x);	//Fractional components of x and y
 	var yOffset = y - Math.floor(y);
 
-	var gradients = [			//Hash values to get pseudorandom gradients:
+	var hashes = [			//Hash values to get pseudorandom gradients:
 		p[p[unitX] + unitY],	//	By hashing unitX term, adding unitY term, and hashing again, gradients
 		p[p[unitX+1] + unitY],	//	are replicable but seemingly random.
 		p[p[unitX] + unitY+1],
 		p[p[unitX+1] + unitY+1]
 	];
 
-	var exponents = [
-		m[gradients[0]],
-		m[gradients[1]],
-		m[gradients[2]],
-		m[gradients[3]]
-	];
-
-	//var exponents = gradients.map(gradient => m[gradient]);
-	//console.log(exponents);
-
 	var dotProducts = [								//Runs grad function on respective gradient vectors and four corners
-		m[gradients[0]] * grad(gradients[0], xOffset, yOffset),		//of unit cube
-		m[gradients[1]] * grad(gradients[1], xOffset-1, yOffset),
-		m[gradients[2]] * grad(gradients[2], xOffset, yOffset-1),
-		m[gradients[3]] * grad(gradients[3], xOffset-1, yOffset-1)
+		m[hashes[0] & 255] * grad(hashes[0], xOffset, yOffset),		//of unit cube
+		m[hashes[1] & 255] * grad(hashes[1], xOffset-1, yOffset),
+		m[hashes[2] & 255] * grad(hashes[2], xOffset, yOffset-1),
+		m[hashes[3] & 255] * grad(hashes[3], xOffset-1, yOffset-1)
 	];
 
 	let fadedxOffset = fade(xOffset);	//Fades the offsets to get smoother transitions in following step
@@ -125,12 +112,6 @@ const noise = (x, y) =>
 
 	value = (value + 1) / 2; //Bind to [0, 1] instead of [-1, 1]
 
-	if (value < 0.001)
-	{
-		console.log("small value. exps:");
-		console.log(exponents);
-	}
-
 	return value;
 }
 
@@ -138,7 +119,7 @@ const ExponentiallyDistributedNoise = (size, scale, octaves, persistence, lacuna
 {
 	if (m.length == 0)
 		init();
-
+	
 	let map = new HeightMap(size);
 	let loc = Math.floor(Math.random() * 10000);	//Pick random point in noise grid
 
