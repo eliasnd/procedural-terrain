@@ -6,7 +6,16 @@ import ExponentiallyDistributedNoise from './Generators/ExponentiallyDistributed
 const Generate = (data) =>
 {
 	if (!data)
-		return ExponentiallyDistributedNoise(5, 2, 1, 0.4, 2);
+	{
+		let map1 = ExponentiallyDistributedNoise(257, 2, 2, 0.35, 2);
+		let map2 = PerlinNoise(257, 6, 6, 0.4, 2);
+
+		for (let y = 0; y < 257; y++)
+			for (let x = 0; x < 257; x++)
+				map1.set(x, y, map1.get(x, y) + map2.get(x, y) / 8);
+
+		return map1;
+	}
 
 	if (data.selected === 'Midpoint Displacement')
 		return MidpointDisplacement(data['Size'], data['Spread'], data['Spread Decay']);

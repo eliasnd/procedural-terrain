@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import BuildTerrainMesh from './TerrainMeshBuilder';
 import HeightMap from './../HeightMap';
-import simulate from './../Eroders/Water/PipeSimulation.js'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 

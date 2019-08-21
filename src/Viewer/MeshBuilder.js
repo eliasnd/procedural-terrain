@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-const height = 3;
+const height = 8;
 const meshSize = 33;
 
 /*
