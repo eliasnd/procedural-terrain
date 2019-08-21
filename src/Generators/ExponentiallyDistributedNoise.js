@@ -97,10 +97,10 @@ const noise = (x, y) =>
 	];
 
 	var dotProducts = [								//Runs grad function on respective gradient vectors and four corners
-		m[hashes[0] & 255] * grad(hashes[0], xOffset, yOffset),		//of unit cube
-		m[hashes[1] & 255] * grad(hashes[1], xOffset-1, yOffset),
-		m[hashes[2] & 255] * grad(hashes[2], xOffset, yOffset-1),
-		m[hashes[3] & 255] * grad(hashes[3], xOffset-1, yOffset-1)
+		m[hashes[0]] * grad(hashes[0], xOffset, yOffset),		//of unit cube
+		m[hashes[1]] * grad(hashes[1], xOffset-1, yOffset),
+		m[hashes[2]] * grad(hashes[2], xOffset, yOffset-1),
+		m[hashes[3]] * grad(hashes[3], xOffset-1, yOffset-1)
 	];
 
 	let fadedxOffset = fade(xOffset);	//Fades the offsets to get smoother transitions in following step

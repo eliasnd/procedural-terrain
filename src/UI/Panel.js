@@ -1,7 +1,7 @@
 import React from 'react';
 import SwitchContent from './SwitchContent';
 
-const colors = ['#ffce00', '#0375b4', '#007849', '#252228', 'grey', 'white', 'yellow', 'purple', 'brown']
+const colors = ['#bc986a', '#659dbd', '#fbeec1', '#252228', 'grey', 'white', 'yellow', 'purple', 'brown']
 
 class Panel extends React.Component
 {
@@ -20,7 +20,6 @@ class Panel extends React.Component
 
 	returnData(data)
 	{
-		//console.log(data);
 		let newData = {
 			name: this.props.name,
 			type: this.props.type
@@ -34,20 +33,24 @@ class Panel extends React.Component
 		var tabStyle = {
 			borderRadius: '15% 0% 0% 15%',
 			position: 'absolute',
-			border: 'none',
+			borderStyle: 'solid',
+			borderColor: '#3b2c21',
+			borderWidth: '4px 0px 4px 4px',
 			height: (100 / this.props.tabCount) + '%',
 			width: '5%',
-			top: (100 / this.props.tabCount) * this.props.tabIndex + '%',
+			top: 5 + (100 / this.props.tabCount) * this.props.tabIndex + '%',
 			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '20%') : '0%',
 			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
 		}
 
 		var panelStyle = {
 			position: 'absolute',
-			height: '100%',
+			height: '90%',
 			width: '20%',
-			top: '0%',
+			top: '5%',
 			right: '0%',
+			borderStyle: 'solid',
+			borderColor: '#3b2c21',
 			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
 		}
 

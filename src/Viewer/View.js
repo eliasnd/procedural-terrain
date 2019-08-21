@@ -32,7 +32,7 @@ class View extends React.Component
 		var renderer = new THREE.WebGLRenderer();
 		renderer.shadowMap.enabled = true;
 		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(0x1a214a, 1);
+		renderer.setClearColor(0x6fa8bf, 1);
 
 		var light = new THREE.DirectionalLight(0x404040, 5);
 		light.position.set(0, 60, 0);

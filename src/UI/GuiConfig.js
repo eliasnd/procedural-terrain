@@ -2,7 +2,8 @@ const guiConfig =
 [
 	{
 		name: 'Generators',
-		type: 'SwitchContent',
+		type: 'AssemblyContent',
+		subtype: 'SwitchContent',
 		content: 
 		{
 			label: 'Generator: ',
