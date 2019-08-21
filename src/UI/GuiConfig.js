@@ -14,7 +14,7 @@ const guiConfig =
 						width: '25px'
 					}, 
 					'Scale' : {
-						defaultValue: '2',
+						defaultValue: '1',
 						width: '15px'
 					}, 
 					'Octaves' : {
@@ -26,7 +26,7 @@ const guiConfig =
 						width: '15px'
 					}, 
 					'Lacunarity' : {
-						defaultValue: '2',
+						defaultValue: '1.7',
 						width: '15px'
 					}
 				},

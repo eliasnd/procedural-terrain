@@ -7,12 +7,12 @@ const Generate = (data) =>
 {
 	if (!data)
 	{
-		let map1 = ExponentiallyDistributedNoise(257, 2, 2, 0.35, 2);
+		let map1 = ExponentiallyDistributedNoise(257, 1, 12, 0.4, 1.7);
 		let map2 = PerlinNoise(257, 6, 6, 0.4, 2);
 
-		for (let y = 0; y < 257; y++)
-			for (let x = 0; x < 257; x++)
-				map1.set(x, y, map1.get(x, y) + map2.get(x, y) / 8);
+		//for (let y = 0; y < 257; y++)
+		//	for (let x = 0; x < 257; x++)
+		//		map1.set(x, y, map1.get(x, y) + map2.get(x, y) / 8);
 
 		return map1;
 	}
