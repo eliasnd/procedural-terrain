@@ -14,7 +14,7 @@ const labelStyle = {
 const inputStyle = {
 	textAlign: 'center',
 	display: 'inline-block',
-	width: '50%'
+	width: '50px'
 }
 
 const Parameter = function(props)

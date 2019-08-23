@@ -1,5 +1,6 @@
 import React from 'react';
 import SwitchContent from './SwitchContent';
+import AssemblyContent from './AssemblyContent';
 
 const colors = ['#bc986a', '#659dbd', '#fbeec1', '#252228', 'grey', 'white', 'yellow', 'purple', 'brown']
 
@@ -30,17 +31,24 @@ class Panel extends React.Component
 
 	render()
 	{
+		let height = 100 / this.props.tabCount;
+
+		let tabColor = this.props.color ? this.props.color : colors[this.props.tabIndex];
+
 		var tabStyle = {
-			borderRadius: '15% 0% 0% 15%',
 			position: 'absolute',
-			borderStyle: 'solid',
-			borderColor: '#3b2c21',
-			borderWidth: '4px 0px 4px 4px',
-			height: (100 / this.props.tabCount) + '%',
+			height: (height * 0.8) + '%',
 			width: '5%',
-			top: 5 + (100 / this.props.tabCount) * this.props.tabIndex + '%',
-			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '20%') : '0%',
-			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
+			top: 5 + (height) * this.props.tabIndex + '%',
+			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '20.3%') : '0%',
+			marginTop: (height * 0.1) + '%',
+			marginBottom: (height * 0.1) + '%',
+			zIndex: this.props.open == this.props.tabIndex ? 2 : 0,
+			borderStyle: 'solid',
+			borderColor: '#3b2c21 ' + tabColor + ' #3b2c21 #3b2c21',
+			borderWidth: '4px',
+			borderRadius: '10px 0% 0% 10px',
+			backgroundColor: tabColor
 		}
 
 		var panelStyle = {
@@ -49,13 +57,20 @@ class Panel extends React.Component
 			width: '20%',
 			top: '5%',
 			right: '0%',
+			zIndex: 1,
+			borderRadius: '15px 0% 0% 15px',
 			borderStyle: 'solid',
 			borderColor: '#3b2c21',
+			borderWidth: '4px',
 			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
 		}
 
+		var content;
+
 		if (this.props.type == 'SwitchContent')
-			var content = (<SwitchContent content = {this.props.content} callback = {this.returnData}/>);
+			content = <SwitchContent content = {this.props.content} callback = {this.returnData}/>;
+		else if (this.props.type == 'AssemblyContent')
+			content = <AssemblyContent subtype = {this.props.subtype} content = {this.props.content} callback = {this.returnData}/>;
 
 		if (this.props.open == this.props.tabIndex)
 		{ 

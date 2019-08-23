@@ -45,6 +45,7 @@ class SidebarGui extends React.Component
 				name = {panel.name} 
 				key = {panel.name}
 				type = {panel.type}
+				subtype = {panel.subtype}
 				content = {panel.content}
 				tabCount = {this.props.tabCount ? this.props.tabCount : this.props.config.length} 
 				tabIndex = {index} 

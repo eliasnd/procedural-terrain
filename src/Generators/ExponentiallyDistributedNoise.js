@@ -69,8 +69,6 @@ const init = () =>
 
 	for (let i = 0; i < 256; i++)
 		m.push(mu /= dec);
-
-	console.log(m);
 }
 
 const noise = (x, y) =>
