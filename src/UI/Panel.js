@@ -1,6 +1,6 @@
 import React from 'react';
 import SwitchContent from './SwitchContent';
-import AssemblyContent from './AssemblyContent';
+import AssemblyContent from './AssemblyContent/AssemblyContent';
 
 const colors = ['#bc986a', '#659dbd', '#fbeec1', '#252228', 'grey', 'white', 'yellow', 'purple', 'brown']
 

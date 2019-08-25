@@ -1,5 +1,5 @@
 import React from 'react';
-import Params from './AssemblyContent/Params';
+import Params from './Params';
 
 const style = {
 	textAlign: 'center',
@@ -46,7 +46,7 @@ const bodyStyle = {
 	paddingBottom: '5%'
 }
 
-class SwitchContent extends React.Component
+class AssemblySwitch extends React.Component
 {
 	constructor(props)
 	{
@@ -84,8 +84,12 @@ class SwitchContent extends React.Component
 
 	switch(event)
 	{
+		if (!this.state.verified)
+			this.props.verify();
+
 		this.setState({
-			selected: event.target.value
+			selected: event.target.value,
+			verified: true
 		});
 	}
 
@@ -106,57 +110,44 @@ class SwitchContent extends React.Component
 
 		options.unshift(<option key = 'none' value = 'none' disabled hidden>{'Select ' + this.props.content.label}</option>);
 
-		if (this.props.collapsible)
-		{
-			if (!this.state.open)
-				if (this.state.selected === 'none')
-					return (
-						<div>
-							<div style = {headerStyle}>
-								<div style = {switchStyle}>
-									<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
-								</div>
-								<button onClick = {this.toggleOpen} style = {buttonStyle}></button>
+		if (!this.state.open)
+			if (this.state.selected === 'none')
+				return (
+					<div>
+						<div style = {headerStyle}>
+							<div style = {switchStyle}>
+								<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
 							</div>
+							<button onClick = {this.toggleOpen} style = {buttonStyle}></button>
 						</div>
-					);
-				else
-					return (
-						<div>
-							<div style = {headerStyle}>
-								<div style = {switchStyle}>
-									<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
-								</div>
-								<button onClick = {this.toggleOpen} style = {buttonStyle}>+</button>
-							</div>
-						</div>
-					);
+					</div>
+				);
 			else
 				return (
 					<div>
 						<div style = {headerStyle}>
 							<div style = {switchStyle}>
-								<select onChange = {this.switch} defaultValue = 'none'> {options} </select>
+								<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
 							</div>
-							<button onClick = {this.toggleOpen} style = {buttonStyle}>-</button>
-						</div>
-						<div style = {bodyStyle}>
-							<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
+							<button onClick = {this.toggleOpen} style = {buttonStyle}>+</button>
 						</div>
 					</div>
 				);
-		}
-		else	
+		else
 			return (
-				<div style = {style}>
-					<div style = {switchStyle}>
-						<span>{this.props.content.label}</span>
-						<select onChange = {this.switch}> {options} </select>
+				<div>
+					<div style = {headerStyle}>
+						<div style = {switchStyle}>
+							<select onChange = {this.switch} defaultValue = 'none'> {options} </select>
+						</div>
+						<button onClick = {this.toggleOpen} style = {buttonStyle}>-</button>
 					</div>
-					<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
+					<div style = {bodyStyle}>
+						<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
+					</div>
 				</div>
 			);
 	}
 }
 
-export default SwitchContent;
+export default AssemblySwitch;
