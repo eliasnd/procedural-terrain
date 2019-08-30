@@ -29,6 +29,10 @@ const guiConfig =
 					'Lacunarity' : {
 						defaultValue: '1.7',
 						width: '15px'
+					},
+					'Weight' : {
+						defaultValue: '1',
+						width: '15px'
 					}
 				},
 				'Perlin Noise' : {
@@ -51,6 +55,10 @@ const guiConfig =
 					'Lacunarity' : {
 						defaultValue: '2',
 						width: '15px'
+					},
+					'Weight' : {
+						defaultValue: '1',
+						width: '15px'
 					}
 				},
 				'Midpoint Displacement' : {
@@ -64,6 +72,10 @@ const guiConfig =
 					}, 
 					'Spread Decay' : {
 						defaultValue: '0.5'
+					},
+					'Weight' : {
+						defaultValue: '1',
+						width: '15px'
 					}
 				},
 				'Diamond Square' : {
@@ -76,6 +88,10 @@ const guiConfig =
 					}, 
 					'Spread Decay' : {
 						defaultValue: '0.5'
+					},
+					'Weight' : {
+						defaultValue: '1',
+						width: '15px'
 					}
 				}
 			},

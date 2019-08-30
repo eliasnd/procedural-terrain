@@ -136,14 +136,18 @@ const ExponentiallyDistributedNoise = (size, scale, octaves, persistence, lacuna
 			let frequency = 1;
 			let noiseVal = 0;
 
+			let xCoord = (loc + x) / scale * frequency;		//Converts integer coordinates into fractional ones for sampling noise
+			let yCoord = (loc + y) / scale * frequency;
+
 			//Each successive octave increments the noiseval by a smaller amount with greater detail
 			for (let o = 0; o < octaves; o++) 			
 			{											
-				let xCoord = x / scale * frequency;		//Converts integer coordinates into fractional ones for sampling noise
-				let yCoord = y / scale * frequency;
-				let sample = noise(loc + xCoord, loc + yCoord);
+				let sample = noise(xCoord, yCoord);
 
 				noiseVal += sample * amplitude;
+
+				xCoord *= 2;
+				yCoord *= 2;
 
 				amplitude *= persistence;
 				frequency *= lacunarity;

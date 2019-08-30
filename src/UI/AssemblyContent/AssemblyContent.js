@@ -13,6 +13,12 @@ var passStyle = {
 
 var contentStyle = {
 	marginTop: '10%',
+	textAlign: 'center'
+}
+
+var buttonStyle = {
+	position: 'relative',
+	marginTop: '10%'
 }
 
 class SwitchPass extends React.Component
@@ -25,7 +31,8 @@ class SwitchPass extends React.Component
 		};
 
 		this.verifyPass = this.verifyPass.bind(this);
-		this.submitPass = this.submitPass.bind(this);
+		this.submitJoiner = this.submitJoiner.bind(this);
+		this.submitContent = this.submitContent.bind(this);
 	}
 
 	verifyPass()
@@ -34,14 +41,17 @@ class SwitchPass extends React.Component
 		
 		this.setState({
 			verified: true
-		})
-
-		console.log(this.state.verified);
+		});
 	}
 
-	submitPass()
+	submitContent(data)
 	{
-		this.props.callback(this.props.index);
+		this.props.callback(data, 'content', this.props.index);
+	}
+
+	submitJoiner(char)
+	{
+		this.props.callback(char, 'joiner', this.props.index);
 	}
 
 	render()
@@ -49,9 +59,9 @@ class SwitchPass extends React.Component
 		return (
 			<div>
 				<div style = {passStyle}>
-					<AssemblySwitch content = {this.props.content} verify = {this.verifyPass}/>
+					<AssemblySwitch content = {this.props.content} verify = {this.verifyPass} callback = {this.submitContent}/>
 				</div>
-				<AssemblyJoiner callback = {this.submitPass} verified = {this.state.verified}/>
+				<AssemblyJoiner callback = {this.submitJoiner} verified = {this.state.verified}/>
 			</div>
 		);
 	}
@@ -63,35 +73,65 @@ class AssemblyContent extends React.Component
 	{
 		super(props);
 
-		this.addPass = this.addPass.bind(this);
+		this.getData = this.getData.bind(this);
 		this.verifyPass = this.verifyPass.bind(this);
+		this.submit = this.submit.bind(this);
 
-		this.state = {
-			passes : [this.props.subtype === 'SwitchContent' ? 
-				<SwitchPass 
+		let passes = [];
+
+		if (this.props.subtype === 'SwitchContent')
+			passes.push(<SwitchPass 
 					content = {this.props.content} 
-					callback = {this.addPass} 
+					callback = {this.getData} 
 					verify = {this.verifyPass}
 					index = '0'
-				/> : undefined],
-			verified: 0
+				/>);
+
+		this.state = {
+			passes : passes,
+			verified: 0,
+			content: [],
+			joiners: []
 		}
 	}
 
-	addPass(index) 
+	getData(data, type, index)
 	{
-		if (this.state.verified == this.state.passes.length && this.state.verified == index+1)
+		if (type === 'joiner')
 		{
-			let passes = this.state.passes;
-			passes.push(this.props.subtype === 'SwitchContent' ? 
-				<SwitchPass 
-					content = {this.props.content} 
-					callback = {this.addPass}
-					verify = {this.verifyPass}
-					index = {this.state.passes.length}
-				/> : undefined);
+			if (data === '↓')
+			{
+				if (this.state.verified == this.state.passes.length && this.state.verified == index+1)
+				{
+					let passes = this.state.passes;
+					passes.push(this.props.subtype === 'SwitchContent' ? 
+						<SwitchPass 
+							content = {this.props.content} 
+							callback = {this.getData}
+							verify = {this.verifyPass}
+							index = {this.state.passes.length}
+						/> : undefined);
+					this.setState({
+						passes: passes
+					});
+				}
+			}
+			else
+			{
+				let joiners = this.state.joiners;
+				joiners[index] = data;
+
+				this.setState({
+					joiners: joiners
+				});
+			}
+		}
+		else
+		{
+			let content = this.state.content;
+			content[index] = data;
 			this.setState({
-				passes: passes
+				content: content
 			});
 		}
 	}
@@ -103,13 +143,29 @@ class AssemblyContent extends React.Component
 		});
 	}
 
+	submit()
+	{
+		let submission = [];
+		for (let i = 0; i < this.state.verified-1; i++)
+		{
+			submission.push(this.state.content[i]);
+			submission.push(this.state.joiners[i]);
+		}
+
+		submission.push(this.state.content[this.state.verified-1]);
+
+		if (this.state.verified > 0)
+			this.props.callback({data: submission});
+	}
+
 	render()
 	{
-		var component;
-
 		return (
 			<div style = {contentStyle}>
-				{this.state.passes}
+				<div style = {contentStyle}>
+					{this.state.passes}
+				</div>
+				<button style = {buttonStyle} onClick = {this.submit}>Generate</button>
 			</div>
 		);
 	}

@@ -37,9 +37,15 @@ class Params extends React.Component
 	constructor(props)
 	{
 		super(props);
+
+		let params = {};
+
+		let config = this.props.options[this.props.selected];
+
 		this.state = {
 			params: {}
 		}
+
 		this.getParam = this.getParam.bind(this);
 	}
 
@@ -60,7 +66,7 @@ class Params extends React.Component
 		let config = this.props.options[this.props.selected];
 		let params = Object.keys(config);
 
-		params = params.map(param => <Parameter key = {param} label = {param} type = {config[param].type} tags = {config[param]} callback = {this.getParam}/>);
+		params = params.map(param => <Parameter key = {param} label = {param} tags = {config[param]} callback = {this.getParam}/>);
 
 		return (
 			<div>

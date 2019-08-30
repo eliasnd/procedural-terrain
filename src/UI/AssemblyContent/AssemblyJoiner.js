@@ -3,7 +3,6 @@ import React from 'react';
 var buttonStyle = {
 	width: '8%',
 	height: '24px',
-	marginLeft: '46%',
 	marginTop: '6px',
 	marginBottom: '6px',
 	borderRadius: '5px',
@@ -30,23 +29,23 @@ class AssemblyJoiner extends React.Component
 
 	handleClick()
 	{
-		console.log(this.props.verified);
 		if (this.props.verified)
 			if (this.state.char === 4)
+			{
+				this.props.callback(buttonChars[this.state.char]);
 				this.setState({
 					char: 0
-				})
+				}, () => this.props.callback(buttonChars[this.state.char]));
+			}
 			else
 				this.setState({
 					char: (this.state.char+1) % 4
-				});
+				}, () => this.props.callback(buttonChars[this.state.char]));
 
-		this.props.callback();
 	}
 
 	render()
 	{
-		console.log('rendering');
 		return (
 			<button onClick = {this.handleClick} style = {buttonStyle}>{buttonChars[this.state.char]}</button>
 		);

@@ -38,9 +38,9 @@ class Panel extends React.Component
 		var tabStyle = {
 			position: 'absolute',
 			height: (height * 0.8) + '%',
-			width: '5%',
+			width: '75px',
 			top: 5 + (height) * this.props.tabIndex + '%',
-			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '20.3%') : '0%',
+			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '279px') : '0',
 			marginTop: (height * 0.1) + '%',
 			marginBottom: (height * 0.1) + '%',
 			zIndex: this.props.open == this.props.tabIndex ? 2 : 0,
@@ -54,7 +54,7 @@ class Panel extends React.Component
 		var panelStyle = {
 			position: 'absolute',
 			height: '90%',
-			width: '20%',
+			width: '275px',
 			top: '5%',
 			right: '0%',
 			zIndex: 1,

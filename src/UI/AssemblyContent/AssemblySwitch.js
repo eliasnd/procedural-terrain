@@ -52,19 +52,9 @@ class AssemblySwitch extends React.Component
 	{
 		super(props);
 
-		let params = {};
-
-		let fields = this.props.content.options[Object.keys(this.props.content.options)[0]];
-
-		for (let i = 0; i < Object.keys(fields).length; i++)
-		{
-			let key = Object.keys(fields)[i];
-			params[key] = fields[key]['defaultValue'];
-		}
-
 		this.state = {
 			selected: 'none',
-			params: params,
+			params: {},
 			open: false,
 			verified: false
 		}
@@ -72,6 +62,7 @@ class AssemblySwitch extends React.Component
 		this.toggleOpen = this.toggleOpen.bind(this);
 		this.switch = this.switch.bind(this);
 		this.getParams = this.getParams.bind(this);
+		this.initParams = this.initParams.bind(this);
 	}
 
 	toggleOpen()
@@ -90,6 +81,25 @@ class AssemblySwitch extends React.Component
 		this.setState({
 			selected: event.target.value,
 			verified: true
+		}, this.initParams);
+	}
+
+	initParams()
+	{
+		let params = {};
+
+		let fields = this.props.content.options[this.state.selected];
+
+		for (var field in fields)
+			params[field] = fields[field]['defaultValue'];
+
+		this.setState({
+			params: params
+		});
+
+		this.props.callback({
+			selected: this.state.selected,
+			...params
 		});
 	}
 
@@ -101,7 +111,10 @@ class AssemblySwitch extends React.Component
 			params: newParams
 		});
 
-		this.props.callback(newParams);
+		this.props.callback({
+			selected: this.state.selected,
+			...newParams
+		});
 	}
 
 	render()
@@ -123,6 +136,7 @@ class AssemblySwitch extends React.Component
 					</div>
 				);
 			else
+			{
 				return (
 					<div>
 						<div style = {headerStyle}>
@@ -133,6 +147,7 @@ class AssemblySwitch extends React.Component
 						</div>
 					</div>
 				);
+			}
 		else
 			return (
 				<div>
