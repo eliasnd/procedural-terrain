@@ -5,19 +5,21 @@ const atmoPressure = 101.3; 	//kPa
 const friction = 0.9995;		//Not scientific
 
 //Model params
-const resolution = 16;
 const cellCount = 3;
 
 //Time params
 const timeStep = 50;				//5 ms
-const timeOut = 10000;			//50 seconds
+const timeOut = 10;			//50 seconds
 
 const debug = false;
 
 const simulate = (waterMap, landMap) =>
 {
 	let { columns, pipes } = init(waterMap, landMap);
-	let columnSize = waterMap.size / resolution;
+	let columnSize = landMap ? landMap.size / waterMap.size : 257 / waterMap.size;
+	let size = waterMap.size;
+
+	const getCol = (x, y) => columns[y * size + x];
 
 	const columnHeight = (col) => col[cellCount-1].top - col[0].bottom;
 
@@ -36,14 +38,24 @@ const simulate = (waterMap, landMap) =>
 			for (let p = 0; p < pipes.length; p++)		//Update pipe flow and calculate volume through each pipe
 			{
 				let pipe = pipes[p];
+				let [x1, y1, c1] = [...pipe.head];
+				let [x2, y2, c2] = [...pipe.tail];
 
-				let headCol = columns[pipe.head[1] * resolution + pipe.head[0]];
-				let tailCol = columns[pipe.tail[1] * resolution + pipe.tail[0]];
+				let headCol = getCol(x1, y1);
+				let tailCol = getCol(x2, y2);
 
-				let headCell = headCol[pipe.head[2]];
-				let tailCell = tailCol[pipe.tail[2]];
+				let headCell = headCol[c1];
+				let tailCell = tailCol[c2];
 
 				let crossSection = (Math.min(headCell.top, tailCell.top) - Math.max(headCell.bottom, tailCell.bottom)) * columnSize;
+
+				if (debug && crossSection <= 0)
+				{
+					console.log('crossSection: ' + crossSection);
+					console.log(headCell);
+					console.log(tailCell);
+					console.log('columnSize: ' + columnSize); 
+				}
 
 				if (crossSection > 0)		//Cross section less than 0 means cells are not adjacent
 				{
@@ -88,17 +100,17 @@ const simulate = (waterMap, landMap) =>
 				}
 			}
 
-			for (let y = 0; y < resolution; y++)
-				for (let x = 0; x < resolution; x++)
+			for (let y = 0; y < size; y++)
+				for (let x = 0; x < size; x++)
 				{
-					let column = columns[y * resolution + x];
+					let column = getCol(x, y);
 
 					let oldHeight = columnHeight(column);
 
 					setBounds(column);
-					waterMap.setRange(x * columnSize, y * columnSize, (x+1) * columnSize, (y+1) * columnSize, columnHeight(column));
+					waterMap.set(x, y, columnHeight(column));
 
-					if (columnHeight(column) !== oldHeight && debug)
+					if (columnHeight(column) !== oldHeight)// && debug)
 					{
 						console.log('Changed height at ' + x + ', ' + y + ' from ' + oldHeight + ' to ' + columnHeight(column));
 						console.log('map now has val ' + waterMap.get(x, y));
@@ -115,35 +127,24 @@ const init = (waterMap, landMap) =>
 
 	let columns = [];
 
-	let columnSize = waterMap.size / resolution;
+	let columnSize = landMap ? landMap.size / waterMap.size : 257 / waterMap.size;
 
-	for (let y = 0; y < resolution; y++)			//Condensce waterMap to array of columns with size resolution * resolution
-		for (let x = 0; x < resolution; x++)
-		{	
-			let heights = [];							//Average values in columnSize * columnSize area
-
-			for (let cy = y * columnSize; cy < (y+1) * columnSize; cy++)		
-				for (let cx = x * columnSize; cx < (x+1) * columnSize; cx++)
-					heights.push(waterMap.get(cx, cy));
-
-			columns[y * resolution + x] = heights.reduce( (total, curr) => total + curr ) / heights.length;		//Initialize columns to contain heights
-		}
-
-	for (let y = 0; y < resolution; y++)
-		for (let x = 0; x < resolution; x++)
+	for (let y = 0; y < waterMap.size; y++)
+		for (let x = 0; x < waterMap.size; x++)
 		{
-			let height = columns[y * resolution + x] / cellCount;
+			let height = waterMap.get(x, y) / cellCount;
 
-			columns[y * resolution + x] = [];		//Columns will now be arrays of cells
+			columns[y * waterMap.size + x] = [];		//Columns will now be arrays of cells
 
 			for (let c = 0; c < cellCount; c++)		//Cells initialized with volume, top, and bottom
-				columns[y * resolution + x].push(
+				columns[y * waterMap.size + x].push(
 				{
 					volume: height * columnSize**2,
 					top: height * (c+1),
 					bottom: height * c
 				});
 		}
+
 
 	//----------- Create Pipes -----------//
 
@@ -165,15 +166,15 @@ const init = (waterMap, landMap) =>
 		return columnPipes;
 	}
 
-	for (let y = 0; y < resolution-1; y++)		//Each cell initializes its own down-left, down, down-right, and right pipes, so skip last row
-		for (let x = 0; x < resolution; x++)
+	for (let y = 0; y < waterMap.size-1; y++)		//Each cell initializes its own down-left, down, down-right, and right pipes, so skip last row
+		for (let x = 0; x < waterMap.size; x++)
 		{
 			if (x > 0)
 				pipes.push(...connectColumns(x, y, x-1, y+1)); 		//Down-left pipes
 
 			pipes.push(...connectColumns(x, y, x, y+1));			//Down pipes
 
-			if (x < resolution-1)
+			if (x < waterMap.size-1)
 			{
 				pipes.push(...connectColumns(x, y, x+1, y+1));		//Down-right pipes
 				pipes.push(...connectColumns(x, y, x+1, y));		//Right pipes

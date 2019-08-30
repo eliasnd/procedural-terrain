@@ -10,6 +10,7 @@ const BuildWaterMesh = (waterMap, size) =>
 	let geometry = new THREE.PlaneBufferGeometry(size, size, waterMap.size, waterMap.size);
 	
 	geometry.addAttribute('position', new THREE.BufferAttribute(waterMap.map, 3));
+    geometry.attributes.position.needsUpdate = true;
 
 	//Set faces
 	var faces = [];
@@ -25,7 +26,13 @@ const BuildWaterMesh = (waterMap, size) =>
 
     geometry.computeVertexNormals();
 
-    let material = new THREE.MeshPhongMaterial({color: 'blue'});
+    let material = new THREE.MeshPhongMaterial({
+    	color: 0x18516d,
+    	specular: 0x232323,
+    	shininess: 46,
+    	transparent: true,
+    	opacity: 0.7
+    });
 
     return new THREE.Mesh(geometry, material);
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import BuildTerrainMesh from './TerrainMeshBuilder';
 import BuildWaterMesh from './WaterMeshBuilder';
+import simulate from './../Eroders/FluidErosion/PipeErosion';
 import HeightMap from './../HeightMap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -55,7 +56,12 @@ class View extends React.Component
 		{
 			var waterMap = this.props.waterMap;
 			var waterMesh = BuildWaterMesh(waterMap);
+			console.log(waterMap.map);
+			setTimeout(() => console.log(waterMap.map), 5000);
+
 			scene.add(waterMesh);
+
+			simulate(waterMap);
 		}
 		
 		this.scene = scene;

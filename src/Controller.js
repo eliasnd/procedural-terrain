@@ -79,6 +79,9 @@ class Controller extends React.Component
 		var guiConfig = require('./UI/GuiConfig.js').config;
 
 		var waterMap = new WaterMap(17);
+		for (let y = 0; y < 17; y++)
+			for (let x = 0; x < 17; x++)
+				waterMap.set(x, y, 1);
 		waterMap.set(0, 0, 10);
 
 		return (
