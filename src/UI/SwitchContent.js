@@ -1,5 +1,5 @@
 import React from 'react';
-import Params from './AssemblyContent/Params';
+import Params from './Params';
 
 const style = {
 	textAlign: 'center',
@@ -24,14 +24,6 @@ const buttonStyle = {
 	display: 'inline-block',
 	color: 'black',
 	border: 'none',
-}
-
-const headerStyle = {
-	backgroundColor: '#fbeec1',
-	borderRadius: '7px',
-	border: 'solid',
-	borderWidth: '3px',
-	borderColor: '#3b2c21'
 }
 
 const bodyStyle = {
@@ -63,7 +55,7 @@ class SwitchContent extends React.Component
 		}
 
 		this.state = {
-			selected: 'none',
+			selected: Object.keys(this.props.content.options)[0],
 			params: params,
 			open: false,
 			verified: false
@@ -72,6 +64,7 @@ class SwitchContent extends React.Component
 		this.toggleOpen = this.toggleOpen.bind(this);
 		this.switch = this.switch.bind(this);
 		this.getParams = this.getParams.bind(this);
+		this.returnData = this.returnData.bind(this);
 	}
 
 	toggleOpen()
@@ -96,66 +89,27 @@ class SwitchContent extends React.Component
 		this.setState({
 			params: newParams
 		});
+	}
 
-		this.props.callback(newParams);
+	returnData()
+	{
+		this.props.callback({selected: this.state.selected, ...this.state.params});
 	}
 
 	render()
 	{
 		var options = Object.keys(this.props.content.options).map(option => <option key = {option} value = {option}>{option}</option>);
 
-		options.unshift(<option key = 'none' value = 'none' disabled hidden>{'Select ' + this.props.content.label}</option>);
-
-		if (this.props.collapsible)
-		{
-			if (!this.state.open)
-				if (this.state.selected === 'none')
-					return (
-						<div>
-							<div style = {headerStyle}>
-								<div style = {switchStyle}>
-									<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
-								</div>
-								<button onClick = {this.toggleOpen} style = {buttonStyle}></button>
-							</div>
-						</div>
-					);
-				else
-					return (
-						<div>
-							<div style = {headerStyle}>
-								<div style = {switchStyle}>
-									<select onChange = {this.switch} defaultValue = 'none' text-align = 'center'> {options} </select>
-								</div>
-								<button onClick = {this.toggleOpen} style = {buttonStyle}>+</button>
-							</div>
-						</div>
-					);
-			else
-				return (
-					<div>
-						<div style = {headerStyle}>
-							<div style = {switchStyle}>
-								<select onChange = {this.switch} defaultValue = 'none'> {options} </select>
-							</div>
-							<button onClick = {this.toggleOpen} style = {buttonStyle}>-</button>
-						</div>
-						<div style = {bodyStyle}>
-							<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
-						</div>
-					</div>
-				);
-		}
-		else	
-			return (
-				<div style = {style}>
-					<div style = {switchStyle}>
-						<span>{this.props.content.label}</span>
-						<select onChange = {this.switch}> {options} </select>
-					</div>
-					<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
+		return (
+			<div style = {style}>
+				<div style = {switchStyle}>
+					<span>{this.props.content.label}</span>
+					<select onChange = {this.switch}> {options} </select>
 				</div>
-			);
+				<Params options = {this.props.content.options} selected = {this.state.selected} callback = {this.getParams}/>
+				<button onClick = {this.returnData}>Erode</button>
+			</div>
+		);
 	}
 }
 

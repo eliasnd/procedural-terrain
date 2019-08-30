@@ -47,7 +47,7 @@ const p = [
 
 const m = [];
 
-const dec = 1.07;
+const dec = 1.02;
 
 const gradientVectors = [
 	[1, 1],

@@ -1,5 +1,5 @@
 import React from 'react';
-import Params from './Params';
+import Params from './../Params';
 
 const style = {
 	textAlign: 'center',

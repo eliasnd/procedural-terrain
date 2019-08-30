@@ -5,6 +5,8 @@ const Erode = (map, data, progressCallback) =>
 	if (!data)
 		return ParticleErosion(map, 1000, 0.3, -9.81, 0.01, 8, 64, 0.02, 0.7, 0.2, 2);
 
+	console.log(data);
+
 	if (data.selected == 'Particle Erosion')
 	{
 		let args = [
