@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import BuildTerrainMesh from './TerrainMeshBuilder';
+import BuildWaterMesh from './WaterMeshBuilder';
 import HeightMap from './../HeightMap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -16,10 +17,7 @@ class View extends React.Component
 	{
 		super(props);
 
-		this.spin = this.spin.bind(this);
-		this.stopSpin = this.stopSpin.bind(this);
-		this.spin = this.spin.bind(this);
-		this.renderScene = this.renderScene.bind(this);
+		this.animate = this.animate.bind(this);
 		this.clearExtras = this.clearExtras.bind(this);
 		this.setMesh = this.setMesh.bind(this);
 		this.handleResize = this.handleResize.bind(this);
@@ -49,46 +47,33 @@ class View extends React.Component
 
 		//Make map
 		var map = this.props.map;
+		var terrainMesh = BuildTerrainMesh(map);
+		scene.add(terrainMesh);
 
-		var mesh = BuildTerrainMesh(map);
-
-		scene.add(mesh);
-
+		//Make water
+		if (this.props.waterMap)
+		{
+			var waterMap = this.props.waterMap;
+			var waterMesh = BuildWaterMesh(waterMap);
+			scene.add(waterMesh);
+		}
+		
 		this.scene = scene;
 		this.renderer = renderer;
 		this.camera = camera;
 		this.extras = [];
-		this.mesh = mesh;
+		this.mesh = terrainMesh;
 
 		this.view.appendChild(renderer.domElement);
-		this.renderScene();
-		this.spin();
+		this.animate();
 
 		window.addEventListener('resize', this.handleResize, false);
 	}
 
-	startSpin()
+	animate()
 	{
-		if (!this.frame)
-			this.frame = requestAnimationFrame(this.spin);
-	}
+		requestAnimationFrame(this.animate);
 
-	stopSpin()
-	{
-		if (this.frame)
-			cancelAnimationFrame(this.frame);
-	}
-
-	spin()
-	{
-		requestAnimationFrame(this.spin);
-		//this.mesh.rotation.y += 0.005;
-
-		this.renderScene();
-	}
-
-	renderScene()
-	{
 		this.renderer.render(this.scene, this.camera);
 	}
 

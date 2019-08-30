@@ -1,9 +1,6 @@
 var lerp = (a, b, f) => { return a + f * (b - a); }										//Basic linear interpolation
 var bilerp = (a, b, c, d, u, v) => { return lerp(lerp(a, b, u), lerp(c, d, u), v); }	//Bilinear interpolation
 
-const height = 8;
-const meshSize = 33;
-
 class HeightMap 
 {
 	constructor(size)

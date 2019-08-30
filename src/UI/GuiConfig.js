@@ -168,6 +168,14 @@ const guiConfig =
 						min: '1',
 						max: '10'
 					}
+				},
+				'Fluid Erosion' : {
+					'Resolution' : {
+						defaultValue: 16
+					},
+					'Time Step' : {
+						defaultValue: 50
+					}
 				}
 			},
 			submit: 'Erode'

@@ -1,4 +1,6 @@
 import ParticleErosion from './Eroders/ParticleErosion';
+import PipeErosion from './Eroders/FluidErosion/PipeErosion';
+import WaterMap from './WaterMap';
 
 const Erode = (map, data, progressCallback) =>
 {
