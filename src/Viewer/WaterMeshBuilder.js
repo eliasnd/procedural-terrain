@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import WaterMap from './../WaterMap';
-import slopeColorShader from './../Shaders/slopeColorShader';
+import waterShader from './../Shaders/waterShader';
 
 const height = 8;
 const meshSize = 33;
@@ -26,13 +26,24 @@ const BuildWaterMesh = (waterMap, size) =>
 
     geometry.computeVertexNormals();
 
-    let material = new THREE.MeshPhongMaterial({
+    var uniforms = {
+        heightMap: {value: waterMap},
+        waterColor: {value: [0.1, 0.3, 0.9, 1.0]}
+    };
+
+    let material = new THREE.ShaderMaterial({
+        uniforms: uniforms,
+        vertexShader: waterShader.vShader,
+        fragmentShader: waterShader.fShader
+    });
+
+    /*let material = new THREE.MeshPhongMaterial({
     	color: 0x18516d,
     	specular: 0x232323,
     	shininess: 46,
     	transparent: true,
     	opacity: 0.7
-    });
+    });*/
 
     return new THREE.Mesh(geometry, material);
 }

@@ -49,19 +49,16 @@ class View extends React.Component
 		//Make map
 		var map = this.props.map;
 		var terrainMesh = BuildTerrainMesh(map);
-		scene.add(terrainMesh);
+		//scene.add(terrainMesh);
 
 		//Make water
 		if (this.props.waterMap)
 		{
 			var waterMap = this.props.waterMap;
 			var waterMesh = BuildWaterMesh(waterMap);
-			console.log(waterMap.map);
-			setTimeout(() => console.log(waterMap.map), 5000);
-
+			//simulate(waterMap);
+			
 			scene.add(waterMesh);
-
-			simulate(waterMap);
 		}
 		
 		this.scene = scene;

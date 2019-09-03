@@ -8,8 +8,8 @@ const friction = 0.9995;		//Not scientific
 const cellCount = 3;
 
 //Time params
-const timeStep = 50;				//5 ms
-const timeOut = 10;			//50 seconds
+const timeStep = 500;				//5 ms
+const timeOut = 1000;			//50 seconds
 
 const debug = false;
 
