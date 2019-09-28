@@ -5,14 +5,17 @@ I originally wrote this in C# but have ported it over to Three.js for web displa
 
 ## Algorithms
 
-Currently: Midpoint Displacement, Diamond Square, Perlin Noise, Particle Hydraulic Erosion
-Planned: Exponentially Distributed Noise, Water Pipe Hydraulic Erosion, Simplex Noise
+Currently: Midpoint Displacement, Diamond Square, Perlin Noise, Particle Hydraulic Erosion, Exponentially Distributed Noise
+
+In-Progress: Water Pipe Hydraulic Erosion
+
+Planned: Water Pipe Hydraulic Erosion, Simplex Noise, Fluvial Erosion
 
 
 ## Dependencies
 
-Requires Three.js, and React.
+Requires Three.js and React.
 
 ## Usage
 
-Navigate to the downloaded directory and run 'npm start'
+Navigate to the downloaded directory and run 'npm build' to get the necessary dependencies, then 'npm start'.
