@@ -36,32 +36,17 @@ class Panel extends React.Component
 		let tabColor = this.props.color ? this.props.color : colors[this.props.tabIndex];
 
 		var tabStyle = {
-			position: 'absolute',
 			height: (height * 0.8) + '%',
-			width: '75px',
 			top: 5 + (height) * this.props.tabIndex + '%',
 			right: this.props.open != undefined ? (this.props.panelWidth ? this.props.panelWidth : '279px') : '0',
 			marginTop: (height * 0.1) + '%',
 			marginBottom: (height * 0.1) + '%',
 			zIndex: this.props.open == this.props.tabIndex ? 2 : 0,
-			borderStyle: 'solid',
 			borderColor: '#3b2c21 ' + tabColor + ' #3b2c21 #3b2c21',
-			borderWidth: '4px',
-			borderRadius: '10px 0% 0% 10px',
 			backgroundColor: tabColor
 		}
 
 		var panelStyle = {
-			position: 'absolute',
-			height: '90%',
-			width: '275px',
-			top: '5%',
-			right: '0%',
-			zIndex: 1,
-			borderRadius: '15px 0% 0% 15px',
-			borderStyle: 'solid',
-			borderColor: '#3b2c21',
-			borderWidth: '4px',
 			backgroundColor: this.props.color ? this.props.color : colors[this.props.tabIndex]
 		}
 
@@ -76,10 +61,10 @@ class Panel extends React.Component
 		{ 
 			return(
 				<div>
-					<button style = {tabStyle} onClick = {this.toggle}>
+					<button className='tab' style = {tabStyle} onClick = {this.toggle}>
 						{this.props.name}
 					</button>
-					<div style = {panelStyle}>
+					<div className='panel' style = {panelStyle}>
 						{content}
 					</div>
 				</div>
@@ -88,7 +73,7 @@ class Panel extends React.Component
 		else
 		{
 			return (
-				<button style = {tabStyle} onClick = {this.toggle}>
+				<button className='tab' style = {tabStyle} onClick = {this.toggle}>
 					{this.props.name}
 				</button>
 			);

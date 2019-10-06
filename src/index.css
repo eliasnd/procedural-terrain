@@ -11,3 +11,24 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.tab {
+	position: absolute;
+	width: 75px;
+	border-style: solid;
+	border-width: 4px;
+	border-radius: 12% 0% 0% 12%;
+}
+
+.panel {
+	position: absolute;
+	height: 90%;
+	width: 275px;
+	top: 5%;
+	right: 0%;
+	z-index: 1;
+	border-radius: 15px 0% 0% 15px;
+	border-style: solid;
+	border-color: #3b2c21;
+	border-width: 4px;
+}
