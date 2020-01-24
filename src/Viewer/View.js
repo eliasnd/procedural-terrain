@@ -4,11 +4,7 @@ import BuildTerrainMesh from './TerrainMeshBuilder';
 import HeightMap from './../HeightMap';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-
-const style = {
-	position: 'relative',
-	height: '100%',
-}
+import './../index.css';
 
 class View extends React.Component
 {
@@ -31,7 +27,7 @@ class View extends React.Component
 
 		var renderer = new THREE.WebGLRenderer();
 		renderer.shadowMap.enabled = true;
-		renderer.setSize(window.innerWidth, window.innerHeight);
+		//renderer.setSize(window.innerWidth, window.innerHeight);
 		renderer.setClearColor(0x6fa8bf, 1);
 
 		var light = new THREE.DirectionalLight(0x404040, 5);
@@ -61,6 +57,7 @@ class View extends React.Component
 		this.mesh = mesh;
 
 		this.view.appendChild(renderer.domElement);
+		renderer.setSize(this.view.clientWidth, this.view.clientHeight);
 		this.renderScene();
 		this.spin();
 
@@ -119,8 +116,8 @@ class View extends React.Component
 
 	handleResize(event)
 	{
-		let width = window.innerWidth;
-		let height = window.innerHeight;
+		let width = this.view.clientWidth;
+		let height = this.view.clientHeight;
 
 		this.camera.aspect = width / height;
 		this.camera.updateProjectionMatrix();
@@ -137,9 +134,14 @@ class View extends React.Component
 				this.props.extras.map((extra) => {this.addExtra(extra)});
 		}
 
-		return (
-			<div ref = {ref => this.view = ref} style = {style}/>
-		);
+		if (this.props.style)
+			return (
+				<div className='view' ref = {ref => this.view = ref} style={this.props.style}/>
+			);
+		else
+			return (
+				<div className='view' ref = {ref => this.view = ref}/>
+			);
 	}
 }
 

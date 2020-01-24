@@ -3,6 +3,7 @@ import Generate from './Generator';
 import Erode from './Eroder';
 import SidebarGui from './UI/SidebarGui';
 import View from './Viewer/View';
+import Navbar from './Navbar';
 
 const undoStyle = {
 	right: '0%',
@@ -79,11 +80,18 @@ class Controller extends React.Component
 
 		return (
 			<div>
+				<View map = {this.state.map} extras = {this.state.extras} />
+				<Navbar/>
+			</div>
+		);
+
+		/*return (
+			<div>
 				<View map = {this.state.map} extras = {this.state.extras}/>
 				<SidebarGui config = {guiConfig} tabCount = '10' callback = {this.handleInput}/>
 				<button onClick = {this.undo} style = {undoStyle}>Undo</button>
 			</div>
-		);
+		);*/
 	}
 }
 
