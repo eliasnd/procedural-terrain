@@ -1,9 +1,8 @@
 import React from 'react';
 import Generate from './Generator';
 import Erode from './Eroder';
-import SidebarGui from './UI/SidebarGui';
 import View from './Viewer/View';
-import Navbar from './Navbar';
+import UI from './UI/UI';
 
 const undoStyle = {
 	right: '0%',
@@ -81,7 +80,7 @@ class Controller extends React.Component
 		return (
 			<div>
 				<View map = {this.state.map} extras = {this.state.extras} />
-				<Navbar/>
+				<UI/>
 			</div>
 		);
 
